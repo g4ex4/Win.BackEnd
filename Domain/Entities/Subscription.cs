@@ -12,7 +12,6 @@ namespace Domain.Entities
     public class Subscription : BaseEntity<int>
     {
         public ILazyLoader Loader { get; set; }
-        public int Id { get; set; }
         public DateTime DateSubscribed { get; set; }
 
         public List<CourseSubscription> CourseSubscription

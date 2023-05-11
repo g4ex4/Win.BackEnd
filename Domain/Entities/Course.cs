@@ -9,9 +9,9 @@ namespace Domain.Entities
         private ILazyLoader Loader { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public string VideoUrl { get; set; }
         public int MentorId { get; set; }
-        public Mentor Mentor { get; set; }
+        public Employee Mentor { get; set; }
+        public List<Video> Videous { get; set; }
         public List<StudentCourse> StudentCourse
         {
             get => Loader.Load(this, ref _studentCourse);
@@ -24,5 +24,11 @@ namespace Domain.Entities
             set => _categoryCourse = value;
         }
         private List<CategoryCourse> _categoryCourse;
+        public List<CourseSubscription> CourseSubscription
+        {
+            get => Loader.Load(this, ref _courseSubscription);
+            set => _courseSubscription = value;
+        }
+        private List<CourseSubscription> _courseSubscription;
     }
 }

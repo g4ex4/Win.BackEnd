@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class Mentor : BaseEntity<int>
+    public class Employee : Person
     {
         public string JobTitle { get; set; }
         public string Experience { get; set; }
