@@ -10,6 +10,10 @@ namespace Persistance
 {
     public class SqlServerContext : BaseDbContext
     {
+        public SqlServerContext(DbContextOptions<BaseDbContext> options) : base(options)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);

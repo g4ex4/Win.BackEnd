@@ -11,20 +11,11 @@ namespace Domain.Entities
 {
     public class Subscription : BaseEntity<int>
     {
-        public ILazyLoader Loader { get; set; }
         public DateTime DateSubscribed { get; set; }
 
-        public List<CourseSubscription> CourseSubscription
-        {
-            get => Loader.Load(this, ref _courseSubscription);
-            set => _courseSubscription = value;
-        }
+        public List<CourseSubscription> CourseSubscription { get; set; }
         private List<CourseSubscription> _courseSubscription;
-        public List<StudentSubscription> StudentSubscription
-        {
-            get => Loader.Load(this, ref _studentSubscription);
-            set => _studentSubscription = value;
-        }
+        public List<StudentSubscription> StudentSubscription { get; set; }
         private List<StudentSubscription> _studentSubscription;
     }
 }

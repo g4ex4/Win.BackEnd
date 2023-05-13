@@ -5,6 +5,10 @@ namespace Persistance
 {
     public class PgContext : BaseDbContext
     {
+        public PgContext(DbContextOptions<BaseDbContext> options) : base(options)
+        {
+        }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
