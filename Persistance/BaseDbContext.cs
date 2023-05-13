@@ -9,9 +9,13 @@ namespace Persistance
     public class BaseDbContext : DbContext, ICategoryDbContext, ICourseDbContext,
         IEmployeeDbContext, IStudentDbContext, ISubDbContext, IVideoDbContext
     {
+        public BaseDbContext()
+        {
+        }
         public BaseDbContext(DbContextOptions<BaseDbContext> options) : base(options)
         {
         }
+
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Course> Courses { get; set; }

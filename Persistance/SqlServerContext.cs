@@ -10,6 +10,9 @@ namespace Persistance
 {
     public class SqlServerContext : BaseDbContext
     {
+        public SqlServerContext()
+        {
+        }
         public SqlServerContext(DbContextOptions<BaseDbContext> options) : base(options)
         {
         }
