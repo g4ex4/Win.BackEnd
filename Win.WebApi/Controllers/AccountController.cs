@@ -8,7 +8,7 @@ using Persistance;
 using System.Net.Mail;
 using Win.WebApi.DtoModel;
 using System.Net;
-
+using System.Net.Security;
 
 namespace Win.WebApi.Controllers
 {
@@ -63,7 +63,7 @@ namespace Win.WebApi.Controllers
                 emailMessage.From = new MailAddress("1goldyshsergei1@gmail.com");
                 emailMessage.To.Add(employeeDto.Email);
                 emailMessage.Subject = "Подтверждение регистрации";
-                emailMessage.Body = $"Пройдите по ссылке для подтверждения регистрации: <a href=http://localhost:7090/Account/confirm-email?email={employeeDto.Email}>Перейдите по ссылке</a>";
+                emailMessage.Body = $"Пройдите по ссылке для подтверждения регистрации: <a href='https://localhost:7090/Account/confirm-email?email={employeeDto.Email}'>Перейдите по ссылке</a>";
                 emailMessage.IsBodyHtml = true;
 
                 var smtpClient = new SmtpClient("smtp.gmail.com", 587);
