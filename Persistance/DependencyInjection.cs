@@ -34,11 +34,11 @@ namespace Persistance
         //}
         public static IServiceCollection AddPersistance(this IServiceCollection services, IConfiguration configuration)
         {
-            //var connectionString = configuration["SqlServerDbContextConnection"];
-            //services.AddDbContext<BaseDbContext>(options =>
-            //{
-            //    options.UseNpgsql(connectionString);
-            //});
+            var connectionString = configuration["SqlServerDbContextConnection"];
+            services.AddDbContext<BaseDbContext>(options =>
+            {
+                options.UseNpgsql(connectionString);
+            });
             services.AddScoped<BaseDbContext>();
             return services;
         }

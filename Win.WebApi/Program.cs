@@ -75,12 +75,6 @@ builder.Services.AddAuthentication(options =>
         };
     });
 
-
-
-var connectionString = builder.Configuration.GetConnectionString("SqlServerDbContextConnection");
-builder.Services.AddDbContext<SqlServerContext>(x => x.UseSqlServer(connectionString));
-
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

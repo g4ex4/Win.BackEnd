@@ -9,6 +9,9 @@ using System.Net.Mail;
 using Win.WebApi.DtoModel;
 using System.Net;
 using System.Net.Security;
+using Application.Employees.Requests;
+using Win.WebApi.Requests;
+using MediatR;
 
 namespace Win.WebApi.Controllers
 {
@@ -17,12 +20,12 @@ namespace Win.WebApi.Controllers
     public class AccountController : ControllerBase
     {
         private readonly SqlServerContext _context;
-        
+        private readonly IMediator _mediator;
 
-        public AccountController(SqlServerContext context)
+        public AccountController(SqlServerContext context, IMediator mediator)
         {
             _context = context;
-            
+            _mediator = mediator;
         }
 
         [HttpPost]
@@ -122,6 +125,13 @@ namespace Win.WebApi.Controllers
             }
             return Ok("Пользователь удалён");
 
+        }
+
+        [HttpPost("register")]
+        public async Task<Response> Register(RegisterEmployeeRequest request)
+        {
+            var response = await _mediator.Send(request);
+            return response;
         }
 
     }

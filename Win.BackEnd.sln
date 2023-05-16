@@ -11,13 +11,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentatio
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{82045F44-60ED-4CF8-8AB3-4349A8EB0932}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{372019CF-3C86-4635-9DA8-D3B2DBEA53F1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{372019CF-3C86-4635-9DA8-D3B2DBEA53F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{05AD6DEF-DC80-4D0B-96BD-90368886838B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{05AD6DEF-DC80-4D0B-96BD-90368886838B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Persistance", "Persistance\Persistance.csproj", "{136728A4-2F6A-44FD-AB50-D69A4728E875}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Persistance", "Persistance\Persistance.csproj", "{136728A4-2F6A-44FD-AB50-D69A4728E875}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Win.WebApi", "Win.WebApi\Win.WebApi.csproj", "{C187850B-485E-447D-98E7-5650E595E180}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Win.WebApi", "Win.WebApi\Win.WebApi.csproj", "{C187850B-485E-447D-98E7-5650E595E180}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
