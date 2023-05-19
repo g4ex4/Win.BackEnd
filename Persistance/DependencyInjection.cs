@@ -19,6 +19,10 @@ namespace Persistance
             {
                 options.UseNpgsql(connectionString);
             });
+            //services.AddDbContext<BaseDbContext>(options =>
+            //{
+            //    options.UseSqlServer(connectionString);
+            //});
             services.AddScoped<BaseDbContext>();
             return services;
         }
