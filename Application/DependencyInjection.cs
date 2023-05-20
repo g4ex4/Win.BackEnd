@@ -1,4 +1,11 @@
-﻿using MediatR;
+﻿using Application.Courses.Commands.CreateCommands;
+using Application.Courses.Commands.DeleteCommands;
+using Application.Courses.Commands.UpdateCommands;
+using Application.Courses.Queries.GetCourseDetails;
+using Application.Courses.Queries.GetCourseList;
+using Application.Interfaces;
+using MediatR;
+using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 

@@ -1,26 +1,48 @@
+using Application;
+using Application.Common.Mappings;
+using Application.Courses.Commands.CreateCommands;
+using Application.Courses.Queries.GetCourseDetails;
+using Application.Courses.Queries.GetCourseList;
 using Application.Interfaces;
+using Domain.Entities;
 using Jose;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Persistance;
-using System.Text;
+using System.Reflection;
+using Win.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddPersistance(builder.Configuration);
+
+//var connectionString = builder.Configuration.GetConnectionString("SqlServerDbContextConnection");
+//builder.Services.AddDbContext<BaseDbContext>(x => x.UseSqlServer(connectionString));
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
+    cfg.AddProfile(new AssemblyMappingProfile(typeof(ICourseDbContext).Assembly));
+    cfg.AddProfile(new AssemblyMappingProfile(typeof(IEmployeeDbContext).Assembly));
+});
+
+builder.Services.AddApplication();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 var SecretKey = builder.Configuration.GetSection("JwtSettings:SecretKey").Value;
 var Issuer = builder.Configuration.GetSection("JwtSettings:Issuer").Value;
 var Audience = builder.Configuration.GetSection("JwtSettings:Audience").Value;
 //var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+builder.Services.AddScoped(typeof(EmailService));
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -74,7 +96,6 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true
         };
     });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

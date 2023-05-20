@@ -9,9 +9,11 @@ using System.Net.Mail;
 using Win.WebApi.DtoModel;
 using System.Net;
 using System.Net.Security;
-using Application.Employees.Requests;
 using Win.WebApi.Requests;
 using MediatR;
+using Application.Courses.Queries.GetCourseDetails;
+using Application.Empl.Commands.CreateCommands;
+using Win.WebApi.Services;
 
 namespace Win.WebApi.Controllers
 {
@@ -21,11 +23,13 @@ namespace Win.WebApi.Controllers
     {
         private readonly SqlServerContext _context;
         private readonly IMediator _mediator;
+        private readonly EmailService _emailService;
 
-        public AccountController(SqlServerContext context, IMediator mediator)
+        public AccountController(SqlServerContext context, IMediator mediator, EmailService emailService)
         {
             _context = context;
             _mediator = mediator;
+            _emailService = emailService;
         }
 
         [HttpPost]
@@ -36,10 +40,13 @@ namespace Win.WebApi.Controllers
             {
                 return new EmployeeResponse(400, "Invalid input data", false, null);
             }
-            if (!employeeDto.Email.Contains("@"))
-            {
-                return new EmployeeResponse(400, "Email is not correct", false, null);
-            }
+
+            //Закоментировал проверка в dto model 
+            //if (!employeeDto.Email.Contains("@"))
+            //{
+            //    return new EmployeeResponse(400, "Email is not correct", false, null);
+            //}
+
             //if (_context.Employees.Count(x => x.Email.Trim() == employeeDto.Email.Trim()) > 0)
             //{
             //    return new EmployeeResponse(400, "Error, Email already exists", false, null);  //Ошибка, электронная почта уже существует
@@ -57,7 +64,7 @@ namespace Win.WebApi.Controllers
                     Education = employeeDto.Education,
                     DateTimeAdded = DateTime.UtcNow,
                     DateTimeUpdated = DateTime.UtcNow,
-                    
+
                 };
                 await _context.Employees.AddAsync(employee);
                 await _context.SaveChangesAsync();
@@ -115,7 +122,7 @@ namespace Win.WebApi.Controllers
                 var user = _context.Employees.FirstOrDefault(x => x.Id == id);
                 if (user == null)
                     return Content("пользователь не найден");
-                
+
                 _context.Employees.Remove(user);
                 await _context.SaveChangesAsync();
             }
@@ -128,11 +135,17 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<Response> Register(RegisterEmployeeRequest request)
+        public async Task<Response> Register(CreateEmplCommand request)
         {
+            if (!ModelState.IsValid)
+            {
+                return new EmployeeResponse(400, "Invalid input data", false, null);
+            }
             var response = await _mediator.Send(request);
+            _emailService.SendEmailAsync(request.Email);
+
             return response;
-        }
+        }        
 
     }
 }
