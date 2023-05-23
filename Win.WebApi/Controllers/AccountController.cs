@@ -6,15 +6,14 @@ using Microsoft.AspNetCore.Mvc;
 using MimeKit;
 using Persistance;
 using System.Net.Mail;
-using Win.WebApi.DtoModel;
 using System.Net;
 using System.Net.Security;
 using Win.WebApi.Requests;
 using MediatR;
 using Application.Empl.Commands.CreateCommands;
-using Win.WebApi.Services;
 using Application.Empl.Commands.DeleteCommands;
 using Application.Empl.Commands.UpdateCommands;
+using Application.Services;
 
 namespace Win.WebApi.Controllers
 {
@@ -24,26 +23,14 @@ namespace Win.WebApi.Controllers
     {
         private readonly SqlServerContext _context;
         private readonly IMediator _mediator;
-        private readonly EmailService _emailService;
+        
 
-        public AccountController(SqlServerContext context, IMediator mediator, EmailService emailService)
+        public AccountController(SqlServerContext context, IMediator mediator)
         {
             _context = context;
             _mediator = mediator;
-            _emailService = emailService;
         }
 
-        
-            //Закоментировал проверка в dto model 
-            //if (!employeeDto.Email.Contains("@"))
-            //{
-            //    return new EmployeeResponse(400, "Email is not correct", false, null);
-            //}
-
-            //if (_context.Employees.Count(x => x.Email.Trim() == employeeDto.Email.Trim()) > 0)
-            //{
-            //    return new EmployeeResponse(400, "Error, Email already exists", false, null);  //Ошибка, электронная почта уже существует
-            //}
     
 
         [HttpPost("register")]
@@ -54,10 +41,24 @@ namespace Win.WebApi.Controllers
                 return new EmployeeResponse(400, "Invalid input data", false, null);
             }
             var response = await _mediator.Send(request);
-            _emailService.SendEmailAsync(request.Email);
+            //_emailService.SendEmailAsync(request.Email);
 
             return response;
         }
+
+        [HttpPut("changePassword")]
+        public async Task<Response> ChangePassword(ChangePasswordEmployeeCommand request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new EmployeeResponse(400, "Invalid input data", false, null);
+            }
+            var response = await _mediator.Send(request);
+
+            return response;
+        }
+
+        
 
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string email)
@@ -67,6 +68,7 @@ namespace Win.WebApi.Controllers
                 var user = _context.Employees.FirstOrDefault(x => x.Email == email);
                 if (user == null)
                     return Content("пользователь не найден");
+
                 user.IsConfirmed = true;
                 await _context.SaveChangesAsync();
             }

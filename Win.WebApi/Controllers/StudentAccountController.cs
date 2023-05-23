@@ -1,11 +1,11 @@
 ﻿using Application.Empl.Commands.CreateCommands;
 using Application.Empl.Commands.DeleteCommands;
+using Application.Empl.Commands.UpdateCommands;
 using Domain.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Persistance;
-using Win.WebApi.Services;
 
 namespace Win.WebApi.Controllers
 {
@@ -15,13 +15,11 @@ namespace Win.WebApi.Controllers
     {
         private readonly SqlServerContext _context;
         private readonly IMediator _mediator;
-        private readonly EmailService _emailService;
 
-        public StudentAccountController(SqlServerContext context, IMediator mediator, EmailService emailService)
+        public StudentAccountController(SqlServerContext context, IMediator mediator)
         {
             _context = context;
             _mediator = mediator;
-            _emailService = emailService;
         }
 
         [HttpPost("register")]
@@ -32,10 +30,24 @@ namespace Win.WebApi.Controllers
                 return new EmployeeResponse(400, "Invalid input data", false, null);
             }
             var response = await _mediator.Send(request);
-            _emailService.SendStudentEmailAsync(request.Email);
+            //_emailService.SendStudentEmailAsync(request.Email);
 
             return response;
         }
+
+        [HttpPut("changePassword")]
+        public async Task<Response> ChangePassword(ChangePasswordStudentCommand request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new EmployeeResponse(400, "Invalid input data", false, null);
+            }
+            var response = await _mediator.Send(request);
+
+            return response;
+        }
+
+        
 
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string email)

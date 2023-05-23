@@ -4,6 +4,7 @@ using Application.Courses.Commands.CreateCommands;
 using Application.Courses.Queries.GetCourseDetails;
 using Application.Courses.Queries.GetCourseList;
 using Application.Interfaces;
+using Application.Services;
 using Domain.Entities;
 using Jose;
 using MediatR;
@@ -14,7 +15,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Persistance;
 using System.Reflection;
-using Win.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

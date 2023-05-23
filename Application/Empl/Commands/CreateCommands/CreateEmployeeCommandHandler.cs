@@ -1,5 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Interfaces;
+using Application.Services;
 using Domain.Entities;
 using Domain.Responses;
 using MediatR;
@@ -8,16 +9,13 @@ namespace Application.Empl.Commands.CreateCommands
 {
     public class RegisterEmployeeHandler : IRequestHandler<CreateEmployeeCommand, Response>
     {
-        //private readonly UserManager<Employee> _userManager;
         private readonly IEmployeeDbContext _dbContext;
+        private readonly EmailService _emailService;
 
-        public RegisterEmployeeHandler(
-            //UserManager<Employee> userManager,
-            IEmployeeDbContext employeeDbContext
-            )
+        public RegisterEmployeeHandler(IEmployeeDbContext employeeDbContext, EmailService emailService            )
         {
-            //_userManager = userManager;
             _dbContext = employeeDbContext;
+            _emailService = emailService;
         }
         public async Task<Response> Handle(CreateEmployeeCommand command,
             CancellationToken cancellationToken)
@@ -36,6 +34,7 @@ namespace Application.Empl.Commands.CreateCommands
             };
             await _dbContext.Employees.AddAsync(emp);
             await _dbContext.SaveChangesAsync(cancellationToken);
+            await _emailService.SendEmailAsync(command.Email);
             return new Response(200, "Employee added successfully", true);
             
         }
