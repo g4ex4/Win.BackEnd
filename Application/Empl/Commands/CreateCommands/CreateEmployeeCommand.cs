@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Application.Empl.Commands.CreateCommands
 {
-    public class CreateEmployeeCommand : IRequest<Response>
+    public class RegisterEmployeeCommand : IRequest<Response>
     {
         [Required]
         public string UserName { get; set; }
@@ -20,9 +20,18 @@ namespace Application.Empl.Commands.CreateCommands
         public string Experience { get; set; }
         [Required]
         public string Education { get; set; }
+
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this);
+            return JsonSerializer.Serialize(new
+            {
+                UserName,
+                Email,
+                PasswordHash,
+                JobTitle,
+                Experience,
+                Education
+            });
         }
     }
 }

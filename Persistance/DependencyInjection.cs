@@ -1,4 +1,6 @@
 ﻿using Application.Interfaces;
+using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +31,7 @@ namespace Persistance
                         => opt.GetService<BaseDbContext>());
                     services.AddScoped<IStudentDbContext>(opt
                         => opt.GetService<BaseDbContext>());
+                    
                     break;
                 case "PostgreSQL":
                     services.AddDbContext<PgContext>(options => options.UseNpgsql(connectionString));
@@ -37,6 +40,8 @@ namespace Persistance
                 default:
                     throw new InvalidOperationException("Invalid database provider specified.");
             }
+            
+
 
             return services;
         }

@@ -1,20 +1,14 @@
 using Application;
 using Application.Common.Mappings;
-using Application.Courses.Commands.CreateCommands;
-using Application.Courses.Queries.GetCourseDetails;
-using Application.Courses.Queries.GetCourseList;
 using Application.Interfaces;
 using Application.Services;
-using Domain.Entities;
-using Jose;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Persistance;
 using System.Reflection;
+using System.Text;
+using Application.JWT;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +27,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddApplication();
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -41,7 +36,7 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSet
 var SecretKey = builder.Configuration.GetSection("JwtSettings:SecretKey").Value;
 var Issuer = builder.Configuration.GetSection("JwtSettings:Issuer").Value;
 var Audience = builder.Configuration.GetSection("JwtSettings:Audience").Value;
-//var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
 builder.Services.AddScoped(typeof(EmailService));
 
 builder.Services.AddSwaggerGen(c =>
@@ -92,7 +87,7 @@ builder.Services.AddAuthentication(options =>
             ValidateAudience = true,
             ValidAudience = Audience,
             ValidateLifetime = true,
-            //IssuerSigningKey = signingKey,
+            IssuerSigningKey = signingKey,
             ValidateIssuerSigningKey = true
         };
     });
@@ -106,7 +101,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
