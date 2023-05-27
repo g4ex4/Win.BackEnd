@@ -39,6 +39,8 @@ namespace Persistance
                         => opt.GetService<BaseDbContext>());
                     services.AddScoped<ISubDbContext>(opt
                        => opt.GetService<BaseDbContext>());
+                    services.AddScoped<ICoursesSubscriptionsDbContext>(opt
+                       => opt.GetService<BaseDbContext>());
 
                     break;
                 case "PostgreSQL":

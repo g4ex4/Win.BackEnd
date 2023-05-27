@@ -8,7 +8,7 @@ namespace Persistance
 {
     public class BaseDbContext : DbContext, ICategoryDbContext, ICourseDbContext,
         IEmployeeDbContext, IStudentDbContext, ISubDbContext, IVideoDbContext, 
-        IStudentSubscriptionDbContext, IStudentCourseDbContext
+        IStudentSubscriptionDbContext, IStudentCourseDbContext, ICoursesSubscriptionsDbContext
     {
         public BaseDbContext()
         {

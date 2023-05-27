@@ -15,16 +15,20 @@ namespace Application.Subs.Commands.CreateCommands
         private readonly ISubDbContext _subDbContext;
         private readonly IStudentSubscriptionDbContext _studentsubDbContext;
         private readonly IStudentCourseDbContext _studentCourseDbContext;
+        private readonly ICoursesSubscriptionsDbContext _CourseSubscripDbContext;
 
         public SubscribeToCourseCommandHandler(IStudentDbContext studentRepository, ICourseDbContext
             courseRepository, ISubDbContext subscriptionRepository,
-            IStudentSubscriptionDbContext studentSubscriptionDbContext, IStudentCourseDbContext studentCourseDbContext)
+            IStudentSubscriptionDbContext studentSubscriptionDbContext,
+            IStudentCourseDbContext studentCourseDbContext, 
+            ICoursesSubscriptionsDbContext coursesSubscriptionsDbContext)
         {
             _studentRepository = studentRepository;
             _courseRepository = courseRepository;
             _subDbContext = subscriptionRepository;
             _studentsubDbContext = studentSubscriptionDbContext;
             _studentCourseDbContext = studentCourseDbContext;
+            _CourseSubscripDbContext = coursesSubscriptionsDbContext;
 
         }
 
@@ -41,59 +45,67 @@ namespace Application.Subs.Commands.CreateCommands
 
 
             //// Проверяем, не подписан ли студент уже на этот курс
-            var isAlreadySubscribed = await _subDbContext.Subs
-                .Include(pp => pp.StudentSubscription.Where(d => d.StudentId == command.StudentId))
-                .Include(o => o.CourseSubscription.Where(f => f.CourseId == command.CourseId))
-                .ToListAsync();
-            //.AnyAsync(x => x == command.StudentId && x.CourseId == command.CourseId);
-            if (isAlreadySubscribed.Count > 0)
+            int CountSubscribedsStudent = await _studentCourseDbContext.StudentCourses
+                .CountAsync(d => d.CourseId == command.CourseId && d.StudentId == command.StudentId);
+
+            if (CountSubscribedsStudent > 0)
                 return new Response(400, "Студент уже подписан на этот курс", false);
 
-                try
+            try
+            {
+                var subscription = new Subscription
                 {
-                    var subscription = new Subscription
-                    {
-                        DateSubscribed = DateTime.Now,
-                        IsDeleted = false,
-                        DateTimeAdded = DateTime.Now,
-                        DateTimeUpdated = DateTime.Now
-                    };
+                    DateSubscribed = DateTime.Now,
+                    IsDeleted = false,
+                    DateTimeAdded = DateTime.Now,
+                    DateTimeUpdated = DateTime.Now
+                };
 
-                    _subDbContext.Subs.Add(subscription);
-                    await _subDbContext.SaveChangesAsync(cancellationToken);
+                _subDbContext.Subs.Add(subscription);
+                await _subDbContext.SaveChangesAsync(cancellationToken);
 
 
-                    // Создаем запись о подписке студента на курс
-                    var student_subscription = new StudentSubscription
-                    {
-                        StudentId = command.StudentId,
-                        SubscriptionId = subscription.Id
-
-                    };
-
-                    _studentsubDbContext.StudentSubscriptions.Add(student_subscription);
-                    await _studentsubDbContext.SaveChangesAsync(cancellationToken);
-
-
-
-                    var student_Coursecription = new StudentCourse
-                    {
-
-                        StudentId = command.StudentId,
-                        CourseId = command.CourseId
-
-                    };
-
-                    _studentCourseDbContext.StudentCourses.Add(student_Coursecription);
-                    await _studentCourseDbContext.SaveChangesAsync(cancellationToken);
-
-                 
-                    return new Response(200, "Студент успешно подписан на курс", true);
-                }
-                catch(Exception e)
+                // Создаем запись о подписке студента на курс
+                var student_subscription = new StudentSubscription
                 {
-                    return new Response(400, $"Во время создания подписка произошла ошибка { e.Message }", false);
-                }
+                    StudentId = command.StudentId,
+                    SubscriptionId = subscription.Id
+
+                };
+
+                _studentsubDbContext.StudentSubscriptions.Add(student_subscription);
+                await _studentsubDbContext.SaveChangesAsync(cancellationToken);
+
+
+
+                var student_Coursecription = new StudentCourse
+                {
+
+                    StudentId = command.StudentId,
+                    CourseId = command.CourseId
+
+                };
+
+                _studentCourseDbContext.StudentCourses.Add(student_Coursecription);
+                await _studentCourseDbContext.SaveChangesAsync(cancellationToken);
+
+                var Course_Subscription = new CourseSubscription
+                {
+
+                    SubscriptionId= subscription.Id,
+                    CourseId = command.CourseId
+
+                };
+
+                _CourseSubscripDbContext.CoursesSubscriptions.Add(Course_Subscription);
+                await _CourseSubscripDbContext.SaveChangesAsync(cancellationToken);
+
+                return new Response(200, "Студент успешно подписан на курс", true);
+            }
+            catch(Exception e)
+            {
+                return new Response(400, $"Во время создания подписка произошла ошибка { e.Message }", false);
+            }
         }
     }
 }
