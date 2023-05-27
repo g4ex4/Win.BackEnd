@@ -1,9 +1,10 @@
 ﻿using Application.Empl.Commands.CreateCommands;
 using Application.Empl.Commands.DeleteCommands;
 using Application.Empl.Commands.UpdateCommands;
+using Application.Students.Commands.CreateCommands;
+using Application.Students.Commands.UpdateCommands;
 using Domain.Responses;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Persistance;
 
@@ -35,6 +36,13 @@ namespace Win.WebApi.Controllers
             return response;
         }
 
+        [HttpPost("authorize")]
+        public async Task<Response> Authorize(AuthorizeStudentCommand request)
+        {
+            var response = await _mediator.Send(request);
+            return response;
+        }
+
         [HttpPut("changePassword")]
         public async Task<Response> ChangePassword(ChangePasswordStudentCommand request)
         {
@@ -47,26 +55,61 @@ namespace Win.WebApi.Controllers
             return response;
         }
 
-        
+        [HttpPost("resetPassword")]
+        public async Task<Response> ResetPassword(StudentResetPasswordCommand request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new StudentResponse(400, "Invalid input data", false, null);
+            }
+            var response = await _mediator.Send(request);
+
+            return response;
+        }
 
         [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail(string email)
+        public async Task<IActionResult> ConfirmEmail(string email, [FromServices] IMediator mediator)
         {
-            try
-            {
-                var user = _context.Students.FirstOrDefault(x => x.Email == email);
-                if (user == null)
-                    return Content("пользователь не найден");
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("что-то пошло не так " + ex.Message);
-            }
-            return Ok("Вы подтвердили свой аккаунт");
+            var command = new StudentConfirmEmailCommand { Email = email };
+            var response = await mediator.Send(command);
 
-
+            if (response.IsSuccess)
+            {
+                return Ok(response.Message);
+            }
+            else
+            {
+                return BadRequest(response.Message);
+            }
         }
+
+        //[HttpGet("confirm-email")]
+        //public async Task<Response> ConfirmEmail(string email, [FromServices] IMediator mediator)
+        //{
+        //    var command = new StudentConfirmEmailCommand { Email = email };
+        //    var response = await mediator.Send(command);
+
+        //    return response;
+        //}
+
+        //[HttpGet("confirm-email")]
+        //public async Task<IActionResult> ConfirmEmail(string email)
+        //{
+        //    try
+        //    {
+        //        var user = _context.Students.FirstOrDefault(x => x.Email == email);
+        //        if (user == null)
+        //            return Content("пользователь не найден");
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest("что-то пошло не так " + ex.Message);
+        //    }
+        //    return Ok("Вы подтвердили свой аккаунт");
+
+
+        //}
 
         [HttpDelete("Delete-User")]
         public async Task<Response> DeleteStudent(DeleteStudentCommand request)

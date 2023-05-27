@@ -1,41 +1,46 @@
-﻿using Application.Interfaces;
+﻿using Application.Empl.Commands.CreateCommands;
+using Application.Interfaces;
 using Application.JWT;
 using Domain.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using BCryptNet = BCrypt.Net;
 
-namespace Application.Empl.Commands.CreateCommands
+namespace Application.Students.Commands.CreateCommands
 {
-    public class AuthorizeEmployeeHandler : IRequestHandler<AuthorizeEmployeeCommand, Response>
+    public class AuthorizeStudentHandler : IRequestHandler<AuthorizeStudentCommand, Response>
     {
-        private readonly IEmployeeDbContext _dbContext;
+        private readonly IStudentDbContext _dbContext;
         private readonly JwtSettings _jwtSettings;
 
-        public AuthorizeEmployeeHandler(IEmployeeDbContext dbContext, IOptions<JwtSettings> jwtSettings)
+        public AuthorizeStudentHandler(IStudentDbContext dbContext, IOptions<JwtSettings> jwtSettings)
         {
             _dbContext = dbContext;
             _jwtSettings = jwtSettings.Value;
         }
 
-        public async Task<Response> Handle(AuthorizeEmployeeCommand command, CancellationToken cancellationToken)
+        public async Task<Response> Handle(AuthorizeStudentCommand command, CancellationToken cancellationToken)
         {
-            
-            var employee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.UserName == command.UserName);
-            if (employee == null || !BCryptNet.BCrypt.Verify(command.PasswordHash, employee.PasswordHash))
+
+            var student = await _dbContext.Students.FirstOrDefaultAsync(e => e.UserName == command.UserName);
+            if (student == null || !BCryptNet.BCrypt.Verify(command.PasswordHash, student.PasswordHash))
             {
                 return new Response(401, "Unauthorized", false);
             }
-    
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
-            
+                new Claim(ClaimTypes.NameIdentifier, student.Id.ToString()),
+
             };
 
             var token = GenerateJwtToken(claims);
@@ -61,7 +66,5 @@ namespace Application.Empl.Commands.CreateCommands
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
-
     }
 }

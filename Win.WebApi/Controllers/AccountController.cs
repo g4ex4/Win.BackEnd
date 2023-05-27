@@ -58,27 +58,51 @@ namespace Win.WebApi.Controllers
         }
 
 
-
         [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail(string email)
+        public async Task<IActionResult> ConfirmEmail(string email, [FromServices] IMediator mediator)
         {
-            try
+            var command = new ConfirmEmailCommand { Email = email };
+            var response = await mediator.Send(command);
+
+            if (response.IsSuccess)
             {
-                var user = _context.Employees.FirstOrDefault(x => x.Email == email);
-                if (user == null)
-                    return Content("пользователь не найден");
-
-                user.IsConfirmed = true;
-                await _context.SaveChangesAsync();
+                return Ok(response.Message);
             }
-            catch (Exception ex)
+            else
             {
-                return BadRequest("что-то пошло не так " + ex.Message);
+                return BadRequest(response.Message);
             }
-            return Ok("Вы подтвердили свой аккаунт");
-
-
         }
+
+        //[HttpGet("confirm-email")]
+        //public async Task<Response> ConfirmEmail(string email, [FromServices] IMediator mediator)
+        //{
+        //    var command = new ConfirmEmailCommand { Email = email };
+        //    var response = await mediator.Send(command);
+
+        //    return response;
+        //}
+
+        //[HttpGet("confirm-email")]
+        //public async Task<IActionResult> ConfirmEmail(string email)
+        //{
+        //    try
+        //    {
+        //        var user = _context.Employees.FirstOrDefault(x => x.Email == email);
+        //        if (user == null)
+        //            return Content("пользователь не найден");
+
+        //        user.IsConfirmed = true;
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return BadRequest("что-то пошло не так " + ex.Message);
+        //    }
+        //    return Ok("Вы подтвердили свой аккаунт");
+
+
+        //}
 
         [HttpPut("Update")]
         public async Task<Response> Update(UpdateEmoloyeeCommand request)
@@ -88,8 +112,19 @@ namespace Win.WebApi.Controllers
             return response;
         }
 
+        [HttpPost("resetPassword")]
+        public async Task<Response> ResetPassword(ResetPasswordCommand request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return new EmployeeResponse(400, "Invalid input data", false, null);
+            }
+            var response = await _mediator.Send(request);
 
-        
+            return response;
+        }
+
+
 
 
         [HttpDelete("Delete-User")]

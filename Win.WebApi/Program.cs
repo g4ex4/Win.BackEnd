@@ -23,6 +23,9 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
     cfg.AddProfile(new AssemblyMappingProfile(typeof(ICourseDbContext).Assembly));
     cfg.AddProfile(new AssemblyMappingProfile(typeof(IEmployeeDbContext).Assembly));
+    cfg.AddProfile(new AssemblyMappingProfile(typeof(IStudentSubscriptionDbContext).Assembly));
+    cfg.AddProfile(new AssemblyMappingProfile(typeof(IStudentCourseDbContext).Assembly));
+    cfg.AddProfile(new AssemblyMappingProfile(typeof(ISubDbContext).Assembly));
 });
 
 builder.Services.AddApplication();

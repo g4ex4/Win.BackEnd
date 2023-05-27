@@ -1,18 +1,9 @@
-﻿using Application.Common.Exceptions;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.JWT;
 using Application.Services;
-using Domain.Entities;
 using Domain.Responses;
-using Jose.native;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Employee = Domain.Entities.Employee;
 
 namespace Application.Empl.Commands.CreateCommands

@@ -5,7 +5,7 @@ namespace Application.Interfaces
 {
     public interface ICategoryDbContext
     {
-        DbSet<Category> Categories { get; set;}
+        DbSet<Category> Categories { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

@@ -7,7 +7,8 @@ using Domain.Links;
 namespace Persistance
 {
     public class BaseDbContext : DbContext, ICategoryDbContext, ICourseDbContext,
-        IEmployeeDbContext, IStudentDbContext, ISubDbContext, IVideoDbContext
+        IEmployeeDbContext, IStudentDbContext, ISubDbContext, IVideoDbContext, 
+        IStudentSubscriptionDbContext, IStudentCourseDbContext
     {
         public BaseDbContext()
         {
@@ -40,7 +41,7 @@ namespace Persistance
                 .HasKey(sc => new { sc.StudentId, sc.CourseId });
 
             builder.Entity<StudentSubscription>()
-                .HasKey(ss => new { ss.StudenId, ss.SubscriptionId });
+                .HasKey(ss => new { ss.StudentId, ss.SubscriptionId });
 
             builder.Entity<Course>()
                 .HasOne(c => c.Mentor)
