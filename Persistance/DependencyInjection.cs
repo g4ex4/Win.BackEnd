@@ -1,14 +1,7 @@
 ﻿using Application.Interfaces;
-using Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Persistance
 {
@@ -40,6 +33,8 @@ namespace Persistance
                     services.AddScoped<ISubDbContext>(opt
                        => opt.GetService<BaseDbContext>());
                     services.AddScoped<ICoursesSubscriptionsDbContext>(opt
+                       => opt.GetService<BaseDbContext>());
+                    services.AddScoped<IVideoDbContext>(opt
                        => opt.GetService<BaseDbContext>());
 
                     break;

@@ -20,7 +20,7 @@ namespace Application.Empl.Commands.UpdateCommands
             var entity = await _dbContext.Employees.FirstOrDefaultAsync(c => c.Id == command.Id, cancellationToken);
             if (entity == null)
             {
-                //throw new NotFoundException(nameof(Employee), command.Id);
+                return new Response(401, "Employee not found", false);
             }
 
             entity.JobTitle = command.JobTitle;

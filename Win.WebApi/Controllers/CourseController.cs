@@ -1,12 +1,10 @@
 ﻿using Application.Courses.Commands.CreateCommands;
 using Application.Courses.Queries.GetCourseDetails;
 using Application.Courses.Queries.GetCourseList;
-using Application.Empl.Commands.CreateCommands;
 using Domain.Responses;
 using MediatR;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Persistance;
 
 namespace Win.WebApi.Controllers
 {
@@ -14,25 +12,22 @@ namespace Win.WebApi.Controllers
     [Route("[controller]")]
     public class CourseController : ControllerBase
     {
-        private readonly SqlServerContext _context;
         private readonly IMediator _mediator;
 
-
-        public CourseController(SqlServerContext context, IMediator mediator)
+        public CourseController(IMediator mediator)
         {
-            _context = context;
             _mediator = mediator;
         }
 
         [HttpPost("Create")]
+        [Authorize(Roles = "Employee")]
         public async Task<Response> Create(CreateCourseCommand request)
         {
             if (!ModelState.IsValid)
             {
-                return new EmployeeResponse(400, "Invalid input data", false, null);
+                return new Response(400, "Invalid input data", false);
             }
             var response = await _mediator.Send(request);
-            //_emailService.SendEmailAsync(request.Email);
 
             return response;
         }
@@ -47,6 +42,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpGet("{id}getCourseDetails")]
+        [Authorize(Roles = "Employee")]
         public async Task<ActionResult<CourseDetailsVm>> GetCourseDetails(int id, int mentorId)
         {
             var query = new GetCourseDetailsQuery { Id = id, MentorId = mentorId };
@@ -54,7 +50,6 @@ namespace Win.WebApi.Controllers
 
             return Ok(result);
         }
-
 
         [HttpGet("getAllCourses")]
         public async Task<ActionResult<CourseListVm>> GetAllCourses()
@@ -64,6 +59,16 @@ namespace Win.WebApi.Controllers
 
             var response = new Response(200, "Courses retrieved successfully", true);
             return Ok(new { Response = response, Courses = courseList });
+        }
+
+        [HttpGet("getStudentCourses/{studentId}")]
+        public async Task<ActionResult<StudentCourseListVm>> GetStudentCourses(int studentId)
+        {
+            var query = new GetStudentCoursesQuery { StudentId = studentId };
+            var courseList = await _mediator.Send(query);
+
+            var response = new Response(200, "Student courses retrieved successfully", true);
+            return Ok(new { Response = response, Courses = courseList.Courses });
         }
 
     }

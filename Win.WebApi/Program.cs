@@ -15,9 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddPersistance(builder.Configuration);
 
-//var connectionString = builder.Configuration.GetConnectionString("SqlServerDbContextConnection");
-//builder.Services.AddDbContext<BaseDbContext>(x => x.UseSqlServer(connectionString));
-
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
@@ -74,7 +71,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -96,7 +92,6 @@ builder.Services.AddAuthentication(options =>
     });
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

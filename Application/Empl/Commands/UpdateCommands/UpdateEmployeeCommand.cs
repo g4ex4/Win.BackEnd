@@ -9,13 +9,6 @@ namespace Application.Empl.Commands.UpdateCommands
     {
         [Required]
         public int Id { get; set; }
-        //[Required]
-        //public string UserName { get; set; }
-        //[Required]
-        //[EmailAddress(ErrorMessage = "Invalid email format")]
-        //public string Email { get; set; }
-        //[Required]
-        //public string PasswordHash { get; set; }
         [Required]
         public string JobTitle { get; set; }
         [Required]

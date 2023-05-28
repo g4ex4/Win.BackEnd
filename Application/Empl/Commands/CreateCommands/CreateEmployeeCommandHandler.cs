@@ -1,10 +1,8 @@
 ﻿using Application.Interfaces;
-using Application.JWT;
 using Application.Services;
 using Domain.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Employee = Domain.Entities.Employee;
 
 namespace Application.Empl.Commands.CreateCommands

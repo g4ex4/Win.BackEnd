@@ -1,7 +1,5 @@
 ﻿using Domain.Common;
 using Domain.Links;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.Extensions.Logging;
 
 namespace Domain.Entities
 {

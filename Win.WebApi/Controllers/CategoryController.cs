@@ -1,9 +1,7 @@
 ﻿using Application.Categories.Commands.CreateCommands;
 using Domain.Responses;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Persistance;
 
 namespace Win.WebApi.Controllers
 {
@@ -11,13 +9,10 @@ namespace Win.WebApi.Controllers
     [Route("[controller]")]
     public class CategoryController : ControllerBase
     {
-        private readonly SqlServerContext _context;
         private readonly IMediator _mediator;
 
-
-        public CategoryController(SqlServerContext context, IMediator mediator)
+        public CategoryController(IMediator mediator)
         {
-            _context = context;
             _mediator = mediator;
         }
 

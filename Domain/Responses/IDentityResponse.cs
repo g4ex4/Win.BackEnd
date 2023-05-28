@@ -11,9 +11,6 @@ namespace Domain.Responses
     {
         private const string dateFormat = "dd/MM/yyyy HH:mm:ss zz";
 
-
-        //private Employee employee;
-
         public IDentityResponse(int statusCode, string message, bool isSuccess, Person person)
             : base(statusCode, message, isSuccess)
         {

@@ -1,5 +1,4 @@
-﻿using Application.Common.Exceptions;
-using Application.Interfaces;
+﻿using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
 using Domain.Responses;
@@ -21,7 +20,6 @@ namespace Application.Empl.Commands.CreateCommands
 
         public async Task<Response> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
         {
-            // Проверка уникальности почты
             var isEmailExists = await _dbContext.Students.AnyAsync(student => student.Email == command.Email, cancellationToken);
             if (isEmailExists)
             {

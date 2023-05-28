@@ -9,12 +9,10 @@ namespace Domain.Responses
 {
     public class EmployeeResponse: Response
     {
-        //private const string dateFormat = "dd/MM/yyyy HH:mm:ss zz";
         public EmployeeResponse(int statusCode, string message, bool isSuccess, Person employee)
             : base(statusCode, message, isSuccess)
         {
             UserName = employee?.UserName ?? "";
-            //UserName = employee.UserName;
         }
         public string UserName { get; set; }
     }

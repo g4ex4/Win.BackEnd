@@ -1,12 +1,11 @@
 ﻿using Domain.Common;
 using Domain.Links;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Domain.Entities
 {
     public class Course : BaseEntity<int>
     {
-        public string Title { get; set; }  //
+        public string Title { get; set; }  
         public string Description { get; set; }
         public int MentorId { get; set; }
         public Employee Mentor { get; set; }

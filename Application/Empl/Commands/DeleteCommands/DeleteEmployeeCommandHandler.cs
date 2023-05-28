@@ -1,9 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.Responses;
 using MediatR;
-using Application.Common.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
 
 namespace Application.Empl.Commands.DeleteCommands
 {
@@ -23,7 +21,6 @@ namespace Application.Empl.Commands.DeleteCommands
             if (entity == null)
             {
                 return new Response(400, "Employee not found", false);
-                //throw new NotFoundException(nameof(Employee), request.EmployeeId);
             }
 
             _dbContext.Employees.Remove(entity);

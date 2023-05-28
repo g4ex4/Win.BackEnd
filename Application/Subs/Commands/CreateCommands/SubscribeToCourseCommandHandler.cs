@@ -4,7 +4,6 @@ using Domain.Links;
 using Domain.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Transactions;
 
 namespace Application.Subs.Commands.CreateCommands
 {
@@ -34,22 +33,19 @@ namespace Application.Subs.Commands.CreateCommands
 
         public async Task<Response> Handle(SubscribeToCourseCommand command, CancellationToken cancellationToken)
         {
-            // Проверяем, существуют ли студент и курс
             var student = await _studentRepository.Students.FirstOrDefaultAsync(x => x.Id == command.StudentId);
             if (student == null)
-                return new Response(404, "Студент не найден", false);
+                return new Response(404, "Student not found", false);
 
             var course = await _courseRepository.Courses.FirstOrDefaultAsync(x => x.Id == command.CourseId);
             if (course == null)
-                return new Response(404, "Курс не найден", false);
+                return new Response(404, "Course not found", false);
 
-
-            //// Проверяем, не подписан ли студент уже на этот курс
             int CountSubscribedsStudent = await _studentCourseDbContext.StudentCourses
                 .CountAsync(d => d.CourseId == command.CourseId && d.StudentId == command.StudentId);
 
             if (CountSubscribedsStudent > 0)
-                return new Response(400, "Студент уже подписан на этот курс", false);
+                return new Response(400, "The student is already subscribed to this course", false);
 
             try
             {
@@ -63,9 +59,7 @@ namespace Application.Subs.Commands.CreateCommands
 
                 _subDbContext.Subs.Add(subscription);
                 await _subDbContext.SaveChangesAsync(cancellationToken);
-
-
-                // Создаем запись о подписке студента на курс
+                
                 var student_subscription = new StudentSubscription
                 {
                     StudentId = command.StudentId,
@@ -75,8 +69,6 @@ namespace Application.Subs.Commands.CreateCommands
 
                 _studentsubDbContext.StudentSubscriptions.Add(student_subscription);
                 await _studentsubDbContext.SaveChangesAsync(cancellationToken);
-
-
 
                 var student_Coursecription = new StudentCourse
                 {
@@ -100,11 +92,11 @@ namespace Application.Subs.Commands.CreateCommands
                 _CourseSubscripDbContext.CoursesSubscriptions.Add(Course_Subscription);
                 await _CourseSubscripDbContext.SaveChangesAsync(cancellationToken);
 
-                return new Response(200, "Студент успешно подписан на курс", true);
+                return new Response(200, "Student successfully subscribed to the course", true);
             }
             catch(Exception e)
             {
-                return new Response(400, $"Во время создания подписка произошла ошибка { e.Message }", false);
+                return new Response(400, $"An error occurred while creating a subscription { e.Message }", false);
             }
         }
     }

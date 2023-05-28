@@ -4,7 +4,6 @@ using Domain.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Application.Empl.Commands.UpdateCommands
 {
