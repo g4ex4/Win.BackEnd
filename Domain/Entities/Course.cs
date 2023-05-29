@@ -12,6 +12,5 @@ namespace Domain.Entities
         public List<Video> Videous { get; set; }
         public List<StudentCourse> StudentCourse { get; set; }
         public List<CategoryCourse> CategoryCourse { get; set; }
-        public List<CourseSubscription> CourseSubscription { get; set; }
     }
 }

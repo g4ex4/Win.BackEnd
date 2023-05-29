@@ -7,9 +7,10 @@ namespace Domain.Entities
     {
         public DateTime DateSubscribed { get; set; }
 
-        public List<CourseSubscription> CourseSubscription { get; set; }
-        private List<CourseSubscription> _courseSubscription;
-        public List<StudentSubscription> StudentSubscription { get; set; }
-        private List<StudentSubscription> _studentSubscription;
+        public int StudentId { get; set; }
+        public Student Student { get; set; }
+        public int CourseId { get; set; }
+        public Course Course { get; set; }
+
     }
 }
