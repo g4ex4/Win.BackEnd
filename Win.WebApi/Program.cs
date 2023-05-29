@@ -27,15 +27,7 @@ builder.Services.AddAutoMapper(cfg =>
 
 builder.Services.AddApplication();
 builder.Services.AddControllers();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyHeader();
-        policy.AllowAnyMethod();
-        policy.AllowAnyOrigin();
-    });
-});
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -99,6 +91,16 @@ builder.Services.AddAuthentication(options =>
             ValidateIssuerSigningKey = true
         };
     });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+        policy.AllowAnyOrigin();
+    });
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -108,7 +110,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("CorsPolicy");
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -54,9 +54,9 @@ namespace Win.WebApi.Controllers
         [HttpGet("getAllCourses")]
         public async Task<ActionResult<CourseListVm>> GetAllCourses()
         {
-            var query = new GetAllCoursesQuery();
+            var query = new GetCourseListQuery();
             var courseList = await _mediator.Send(query);
-
+            
             var response = new Response(200, "Courses retrieved successfully", true);
             return Ok(new { Response = response, Courses = courseList });
         }
