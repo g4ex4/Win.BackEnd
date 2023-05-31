@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.JWT;
+using Domain.Entities;
 using Domain.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ namespace Application.Students.Commands.CreateCommands
         public async Task<Response> Handle(AuthorizeStudentCommand command, CancellationToken cancellationToken)
         {
 
-            var student = await _dbContext.Students.FirstOrDefaultAsync(e => e.UserName == command.UserName);
+            var student = await _dbContext.Students.FirstOrDefaultAsync(e => e.Email == command.Email);
             if (student == null || !BCryptNet.BCrypt.Verify(command.PasswordHash, student.PasswordHash))
             {
                 return new Response(401, "Unauthorized", false);
@@ -35,7 +36,6 @@ namespace Application.Students.Commands.CreateCommands
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, student.Id.ToString()),
-
             };
 
             var token = GenerateJwtToken(claims);

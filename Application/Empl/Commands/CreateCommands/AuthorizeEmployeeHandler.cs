@@ -26,7 +26,7 @@ namespace Application.Empl.Commands.CreateCommands
         public async Task<Response> Handle(AuthorizeEmployeeCommand command, CancellationToken cancellationToken)
         {
             
-            var employee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.UserName == command.UserName);
+            var employee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.Email == command.Email);
             if (employee == null || !BCryptNet.BCrypt.Verify(command.PasswordHash, employee.PasswordHash))
             {
                 return new Response(401, "Unauthorized", false);
