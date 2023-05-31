@@ -5,6 +5,7 @@ using Application.Students.Commands.CreateCommands;
 using Application.Students.Commands.UpdateCommands;
 using Domain.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Win.WebApi.Controllers
@@ -40,6 +41,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPut("changePassword")]
+        [Authorize]
         public async Task<Response> ChangePassword(ChangePasswordStudentCommand request)
         {
             if (!ModelState.IsValid)

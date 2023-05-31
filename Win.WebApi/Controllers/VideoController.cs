@@ -19,7 +19,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "2")]
         public async Task<Response> AddVideo(int courseId, IFormFile videoFile)
         {
             var command = new AddVideoCommand
@@ -34,7 +34,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpDelete("{videoId}")]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "2")]
         public async Task<Response> DeleteVideo(int videoId)
         {
             var command = new DeleteVideoCommand

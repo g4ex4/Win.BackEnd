@@ -4,6 +4,7 @@ using MediatR;
 using Application.Empl.Commands.CreateCommands;
 using Application.Empl.Commands.DeleteCommands;
 using Application.Empl.Commands.UpdateCommands;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Win.WebApi.Controllers
 {
@@ -31,6 +32,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPut("changePassword")]
+        [Authorize(Roles = "2")]
         public async Task<Response> ChangePassword(ChangePasswordEmployeeCommand request)
         {
             if (!ModelState.IsValid)
@@ -66,6 +68,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPut("Update")]
+        [Authorize(Roles = "2")]
         public async Task<Response> Update(UpdateEmoloyeeCommand request)
         {
             var response = await _mediator.Send(request);

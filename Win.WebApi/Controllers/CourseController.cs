@@ -42,7 +42,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpGet("{id}getCourseDetails")]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "2")]
         public async Task<ActionResult<CourseDetailsVm>> GetCourseDetails(int id, int mentorId)
         {
             var query = new GetCourseDetailsQuery { Id = id, MentorId = mentorId };
