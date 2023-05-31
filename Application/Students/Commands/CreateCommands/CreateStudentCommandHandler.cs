@@ -1,9 +1,15 @@
 ﻿using Application.Interfaces;
+using Application.JWT;
 using Application.Services;
 using Domain.Entities;
 using Domain.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Application.Empl.Commands.CreateCommands
 {
@@ -11,11 +17,14 @@ namespace Application.Empl.Commands.CreateCommands
     {
         private readonly IStudentDbContext _dbContext;
         private readonly EmailService _emailService;
+        private readonly JwtSettings _jwtSettings;
 
-        public CreateStudentCommandHandler(IStudentDbContext dbContext, EmailService emailService)
+        public CreateStudentCommandHandler(IStudentDbContext dbContext, EmailService emailService,
+            IOptions<JwtSettings> jwtSettings)
         {
             _dbContext = dbContext;
             _emailService = emailService;
+            _jwtSettings = jwtSettings.Value;
         }
 
         public async Task<Response> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
@@ -40,7 +49,36 @@ namespace Application.Empl.Commands.CreateCommands
             await _dbContext.SaveChangesAsync(cancellationToken);
             await _emailService.SendStudentEmailAsync(command.Email);
 
-            return new Response(200, "Student added successfully", true);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, student.Id.ToString()),
+
+            };
+
+            var token = GenerateJwtToken(claims);
+
+            return new Response(200, "Student added successfully", true, token);
         }
+
+        private string GenerateJwtToken(IEnumerable<Claim> claims)
+        {
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.SecretKey);
+            var credentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256);
+            var expires = DateTime.UtcNow.AddDays(7);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = expires,
+                SigningCredentials = credentials,
+                Issuer = _jwtSettings.Issuer,
+                Audience = _jwtSettings.Audience
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
     }
 }
