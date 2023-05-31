@@ -51,6 +51,8 @@ namespace Application.Subs.Commands.CreateCommands
             {
                 var subscription = new Subscription
                 {
+                    StudentId= command.StudentId,
+                    CourseId= command.CourseId,
                     DateSubscribed = DateTime.Now,
                     IsDeleted = false,
                     DateTimeAdded = DateTime.Now,

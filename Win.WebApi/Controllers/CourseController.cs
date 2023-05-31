@@ -20,7 +20,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("Create")]
-        [Authorize(Roles = "Employee")]
+        [Authorize(Roles = "2")]
         public async Task<Response> Create(CreateCourseCommand request)
         {
             if (!ModelState.IsValid)

@@ -23,6 +23,7 @@ namespace Persistance
         public DbSet<Subscription> Subs { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<CategoryCourse> CategoryCourses { get; set; }
         public DbSet<CourseSubscription> CoursesSubscriptions { get; set;}
         public DbSet<StudentCourse> StudentCourses { get; set; }

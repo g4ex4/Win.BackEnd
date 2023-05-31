@@ -1,8 +1,10 @@
 ﻿using Application.Interfaces;
 using Application.JWT;
 using Application.Services;
+using Domain.Entities;
 using Domain.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -37,6 +39,7 @@ namespace Application.Empl.Commands.CreateCommands
             }
 
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(command.PasswordHash);
+            //PasswordHasher.
             Employee emp = new Employee
             {
                 UserName = command.UserName,
@@ -45,6 +48,7 @@ namespace Application.Empl.Commands.CreateCommands
                 JobTitle = command.JobTitle,
                 Experience = command.Experience,
                 Education = command.Education,
+                RoleId = 2,
                 DateTimeAdded = DateTime.UtcNow,
                 DateTimeUpdated = DateTime.UtcNow,
             };
@@ -56,6 +60,7 @@ namespace Application.Empl.Commands.CreateCommands
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, emp.Id.ToString()),
+                new Claim(ClaimTypes.Role, emp.RoleId.ToString()),
 
             };
 

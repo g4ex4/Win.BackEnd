@@ -35,6 +35,8 @@ namespace Application.Empl.Commands.CreateCommands
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
+                new Claim(ClaimTypes.Role, employee.RoleId.ToString()),
+                
             
             };
 
