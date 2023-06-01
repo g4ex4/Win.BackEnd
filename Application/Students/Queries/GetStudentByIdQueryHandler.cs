@@ -30,7 +30,6 @@ namespace Application.Students.Queries
                     Id = s.Id,
                     UserName = s.UserName,
                     Email = s.Email,
-                    IsDeleted = s.IsDeleted,
                     DateTimeAdded = s.DateTimeAdded,
                     DateTimeUpdated = s.DateTimeUpdated
                 })

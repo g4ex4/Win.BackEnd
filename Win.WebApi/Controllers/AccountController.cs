@@ -6,6 +6,8 @@ using Application.Empl.Commands.DeleteCommands;
 using Application.Empl.Commands.UpdateCommands;
 using Microsoft.AspNetCore.Authorization;
 using Application.Empl.Queries;
+using Application.Interfaces;
+using Persistance;
 
 namespace Win.WebApi.Controllers
 {
@@ -15,7 +17,7 @@ namespace Win.WebApi.Controllers
     {
         private readonly IMediator _mediator;
 
-        public AccountController(IMediator mediator)
+        public AccountController(IMediator mediator, BaseDbContext employeeDbContext)
         {
             _mediator = mediator;
         }

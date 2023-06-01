@@ -54,7 +54,6 @@ namespace Application.Subs.Commands.CreateCommands
                     StudentId= command.StudentId,
                     CourseId= command.CourseId,
                     DateSubscribed = DateTime.Now,
-                    IsDeleted = false,
                     DateTimeAdded = DateTime.Now,
                     DateTimeUpdated = DateTime.Now
                 };

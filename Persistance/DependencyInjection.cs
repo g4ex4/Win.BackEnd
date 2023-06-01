@@ -50,30 +50,6 @@ namespace Persistance
 
             return services;
         }
-        //public static IServiceCollection AddPersistance(this IServiceCollection services, IConfiguration configuration)
-        //{
-        //    var connectionString = configuration["SqlServerDbContextConnection"];
-        //    services.AddDbContext<BaseDbContext>(options =>
-        //    {
-        //        options.UseNpgsql(connectionString);
-        //    });
-        //    services.AddScoped<BaseDbContext>();
-        //    return services;
-        //}
-        //public static IServiceCollection AddPersistance(this IServiceCollection
-        //    services, IConfiguration configuration)
-        //{
-        //    var connectionString = configuration.GetConnectionString("SqlServerDbContextConnection");
-        //    var dbProvider = configuration.GetSection("DbProvider").Value;
-
-        //    //var connectionString = configuration["ConnectionString"];
-        //    services.AddDbContext<BaseDbContext>(options =>
-        //    {
-        //        options.UseSqlServer(connectionString);
-        //    });
-        //    services.AddScoped<ICourseDbContext>(opt
-        //        => opt.GetService<BaseDbContext>());
-        //    return services;
-        //}
+        
     }
 }

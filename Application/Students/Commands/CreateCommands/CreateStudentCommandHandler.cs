@@ -4,6 +4,7 @@ using Application.Services;
 using Domain.Entities;
 using Domain.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -18,13 +19,15 @@ namespace Application.Empl.Commands.CreateCommands
         private readonly IStudentDbContext _dbContext;
         private readonly EmailService _emailService;
         private readonly JwtSettings _jwtSettings;
+        private readonly IPasswordHasher<Student> _passwordHasher;
 
         public CreateStudentCommandHandler(IStudentDbContext dbContext, EmailService emailService,
-            IOptions<JwtSettings> jwtSettings)
+            IOptions<JwtSettings> jwtSettings, IPasswordHasher<Student> passwordHasher)
         {
             _dbContext = dbContext;
             _emailService = emailService;
             _jwtSettings = jwtSettings.Value;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<Response> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
@@ -35,7 +38,7 @@ namespace Application.Empl.Commands.CreateCommands
                 return new Response(400, "The mail already exists.", false);
             }
 
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(command.PasswordHash);
+            string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);
             Student student = new Student
             {
                 UserName = command.UserName,

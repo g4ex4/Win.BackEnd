@@ -3,6 +3,7 @@ using Application.JWT;
 using Domain.Entities;
 using Domain.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -17,18 +18,22 @@ namespace Application.Students.Commands.CreateCommands
     {
         private readonly IStudentDbContext _dbContext;
         private readonly JwtSettings _jwtSettings;
+        private readonly IPasswordHasher<Student> _passwordHasher;
 
-        public AuthorizeStudentHandler(IStudentDbContext dbContext, IOptions<JwtSettings> jwtSettings)
+        public AuthorizeStudentHandler(IStudentDbContext dbContext,
+            IOptions<JwtSettings> jwtSettings, IPasswordHasher<Student> passwordHasher)
         {
             _dbContext = dbContext;
             _jwtSettings = jwtSettings.Value;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<Response> Handle(AuthorizeStudentCommand command, CancellationToken cancellationToken)
         {
 
             var student = await _dbContext.Students.FirstOrDefaultAsync(e => e.Email == command.Email);
-            if (student == null || !BCryptNet.BCrypt.Verify(command.PasswordHash, student.PasswordHash))
+            if (student == null || _passwordHasher
+                .VerifyHashedPassword(null, student.PasswordHash, command.PasswordHash) != PasswordVerificationResult.Success)
             {
                 return new Response(401, "Unauthorized", false);
             }

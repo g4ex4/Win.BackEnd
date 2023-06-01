@@ -1,7 +1,9 @@
 ﻿using Application.Interfaces;
 using Application.JWT;
+using Domain.Entities;
 using Domain.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -16,28 +18,28 @@ namespace Application.Empl.Commands.CreateCommands
     {
         private readonly IEmployeeDbContext _dbContext;
         private readonly JwtSettings _jwtSettings;
+        private readonly IPasswordHasher<Employee> _passwordHasher;
 
-        public AuthorizeEmployeeHandler(IEmployeeDbContext dbContext, IOptions<JwtSettings> jwtSettings)
+        public AuthorizeEmployeeHandler(IEmployeeDbContext dbContext, IOptions<JwtSettings> jwtSettings, IPasswordHasher<Employee> passwordHasher)
         {
             _dbContext = dbContext;
             _jwtSettings = jwtSettings.Value;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<Response> Handle(AuthorizeEmployeeCommand command, CancellationToken cancellationToken)
         {
-            
             var employee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.Email == command.Email);
-            if (employee == null || !BCryptNet.BCrypt.Verify(command.PasswordHash, employee.PasswordHash))
+            if (employee == null || _passwordHasher
+                .VerifyHashedPassword(null, employee.PasswordHash, command.PasswordHash) != PasswordVerificationResult.Success)
             {
                 return new Response(401, "Unauthorized", false);
             }
-    
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
-                new Claim(ClaimTypes.Role, employee.RoleId.ToString()),
-                
-            
+            new Claim(ClaimTypes.NameIdentifier, employee.Id.ToString()),
+            new Claim(ClaimTypes.Role, employee.RoleId.ToString()),
             };
 
             var token = GenerateJwtToken(claims);
@@ -63,7 +65,5 @@ namespace Application.Empl.Commands.CreateCommands
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
-
     }
 }

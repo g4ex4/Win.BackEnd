@@ -20,13 +20,15 @@ namespace Application.Empl.Commands.CreateCommands
         private readonly IEmployeeDbContext _dbContext;
         private readonly EmailService _emailService;
         private readonly JwtSettings _jwtSettings;
+        private readonly IPasswordHasher<Employee> _passwordHasher;
 
         public RegisterEmployeeHandler(IEmployeeDbContext dbContext, EmailService emailService,
-            IOptions<JwtSettings> jwtSettings)
+            IOptions<JwtSettings> jwtSettings, IPasswordHasher<Employee> passwordHasher)
         {
             _dbContext = dbContext;
             _emailService = emailService;
             _jwtSettings = jwtSettings.Value;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<Response> Handle(RegisterEmployeeCommand command, CancellationToken cancellationToken)
@@ -38,8 +40,8 @@ namespace Application.Empl.Commands.CreateCommands
                 return new Response(400, "The mail already exists.", false);
             }
 
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(command.PasswordHash);
-            //PasswordHasher.
+            string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);
+
             Employee emp = new Employee
             {
                 UserName = command.UserName,
@@ -58,11 +60,10 @@ namespace Application.Empl.Commands.CreateCommands
             await _emailService.SendEmailAsync(command.Email);
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, emp.Id.ToString()),
-                new Claim(ClaimTypes.Role, emp.RoleId.ToString()),
-
-            };
+        {
+            new Claim(ClaimTypes.NameIdentifier, emp.Id.ToString()),
+            new Claim(ClaimTypes.Role, emp.RoleId.ToString()),
+        };
 
             var token = GenerateJwtToken(claims);
 

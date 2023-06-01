@@ -9,11 +9,16 @@ using Persistance;
 using System.Reflection;
 using System.Text;
 using Application.JWT;
+using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Xtate.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddPersistance(builder.Configuration);
+builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
+builder.Services.AddScoped<IPasswordHasher<Student>, PasswordHasher<Student>>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -38,6 +43,7 @@ var SecretKey = builder.Configuration.GetSection("JwtSettings:SecretKey").Value;
 var Issuer = builder.Configuration.GetSection("JwtSettings:Issuer").Value;
 var Audience = builder.Configuration.GetSection("JwtSettings:Audience").Value;
 var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+
 builder.Services.AddScoped(typeof(EmailService));
 
 builder.Services.AddSwaggerGen(c =>
