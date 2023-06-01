@@ -11,6 +11,6 @@ namespace Application.JWT
         public string SecretKey { get; set; }
         public string Issuer { get; set; }
         public string Audience { get; set; }
-        public int ExpiryInHours { get; set; }  Добавлено поле для указания срока действия токена в часах
+        public int ExpiryInHours { get; set; }  
     }
 }
