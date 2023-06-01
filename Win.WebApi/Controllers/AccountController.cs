@@ -5,6 +5,7 @@ using Application.Empl.Commands.CreateCommands;
 using Application.Empl.Commands.DeleteCommands;
 using Application.Empl.Commands.UpdateCommands;
 using Microsoft.AspNetCore.Authorization;
+using Application.Empl.Queries;
 
 namespace Win.WebApi.Controllers
 {
@@ -88,12 +89,6 @@ namespace Win.WebApi.Controllers
             return response;
         }
 
-        [HttpDelete("Delete-User")]
-        public async Task<Response> DeleteEmployee(DeleteEmplCommand request)
-        {
-            var response = await _mediator.Send(request);
-            return response;
-        }
 
     }
 }

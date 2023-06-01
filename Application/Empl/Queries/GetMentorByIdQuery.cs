@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Courses.Queries.GetCourseList
+namespace Application.Empl.Queries
 {
-    public class GetAllCoursesQuery : IRequest<CourseListVm>
+    public class GetMentorByIdQuery : IRequest<MentorLookupDto>
     {
+        public int MentorId { get; set; }
     }
 }

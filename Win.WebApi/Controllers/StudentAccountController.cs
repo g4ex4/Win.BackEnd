@@ -1,8 +1,10 @@
 ﻿using Application.Empl.Commands.CreateCommands;
 using Application.Empl.Commands.DeleteCommands;
 using Application.Empl.Commands.UpdateCommands;
+using Application.Empl.Queries;
 using Application.Students.Commands.CreateCommands;
 using Application.Students.Commands.UpdateCommands;
+using Application.Students.Queries;
 using Domain.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -81,11 +83,5 @@ namespace Win.WebApi.Controllers
             }
         }
 
-        [HttpDelete("Delete-User")]
-        public async Task<Response> DeleteStudent(DeleteStudentCommand request)
-        {
-            var response = await _mediator.Send(request);
-            return response;
-        }
     }
 }

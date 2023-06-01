@@ -4,6 +4,7 @@ using Application.Subs.Commands.DeleteCommands;
 using Application.Subs.Queries;
 using Domain.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Win.WebApi.Controllers
@@ -20,6 +21,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("addSubscribtion")]
+        [Authorize]
         public async Task<Response> AddSubscribtion(SubscribeToCourseCommand request)
         {
             if (!ModelState.IsValid)
@@ -32,6 +34,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpDelete("unsubscribe")]
+        [Authorize]
         public async Task<Response> UnsubscribeFromCourse([FromBody] UnsubscribeFromCourseCommand command)
         {
             var response = await _mediator.Send(command);
@@ -41,10 +44,10 @@ namespace Win.WebApi.Controllers
         [HttpGet("getAllSubscription")]
         public async Task<ActionResult<SubscriptionListVm>> GetAllSubscription()
         {
-            var query = new GetAllCoursesQuery();
+            var query = new GetAllSubscriptionQuery();
             var subsList = await _mediator.Send(query);
 
-            var response = new Response(200, "Subscription retrieved successfully", true);
+            var response = new Response(200, "Subscriptions retrieved successfully", true);
             return Ok(new { Response = response, Subs = subsList });
         }
 

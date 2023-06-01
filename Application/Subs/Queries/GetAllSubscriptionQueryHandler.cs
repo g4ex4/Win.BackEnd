@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Subs.Queries
 {
-    public class GetAllSubscriptionQueryHandler: IRequestHandler<GetAllSubscriptionQuery, SubscriptionListVm>
+    public class GetAllSubscriptionQueryHandler : IRequestHandler<GetAllSubscriptionQuery, SubscriptionListVm>
     {
         private readonly IMapper _mapper;
         private readonly ISubDbContext _dbContext;

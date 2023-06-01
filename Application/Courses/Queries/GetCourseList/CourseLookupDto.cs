@@ -14,6 +14,7 @@ namespace Application.Courses.Queries.GetCourseList
         public int Id { get; set; }
         public string Title { get; set; }
         public int MentorId { get; set; }
+
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Course, CourseLookupDto>();
