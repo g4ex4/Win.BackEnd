@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.Courses.Commands.UpdateCommands
 {
-    public class UpdateCourseCommand : IRequest<CourseResponse>
+    public class UpdateCourseCommand : IRequest<Response>
     {
             public int CourseId { get; set; }
             public string Title { get; set; }

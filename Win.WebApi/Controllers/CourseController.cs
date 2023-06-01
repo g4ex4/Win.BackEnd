@@ -1,4 +1,5 @@
 ﻿using Application.Courses.Commands.CreateCommands;
+using Application.Courses.Commands.UpdateCommands;
 using Application.Courses.Queries.GetCourseDetails;
 using Application.Courses.Queries.GetCourseList;
 using Domain.Responses;
@@ -30,6 +31,20 @@ namespace Win.WebApi.Controllers
             var response = await _mediator.Send(request);
 
             return response;
+        }
+
+        [HttpPut("updateCourse")]
+        [Authorize(Roles = "2")]
+        public async Task<ActionResult<Response>> UpdateCourse([FromBody] UpdateCourseCommand command)
+        {
+            var response = await _mediator.Send(command);
+
+            if (!response.IsSuccess)
+            {
+                return StatusCode(response.StatusCode, new { Message = response.Message });
+            }
+
+            return Ok(response);
         }
 
         [HttpGet]
@@ -70,6 +85,8 @@ namespace Win.WebApi.Controllers
             var response = new Response(200, "Student courses retrieved successfully", true);
             return Ok(new { Response = response, Courses = courseList.Courses });
         }
+
+
 
     }
 }

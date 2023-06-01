@@ -1,4 +1,6 @@
-﻿using Application.Empl.Commands.DeleteCommands;
+﻿using Application.Courses.Commands.DeleteCommands;
+using Application.Empl.Commands.DeleteCommands;
+using Application.Empl.Commands.UpdateCommands;
 using Application.Empl.Queries;
 using Application.Students.Queries;
 using Domain.Responses;
@@ -19,6 +21,19 @@ namespace Win.WebApi.Controllers
         public AdminController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpPost("confirmMentor")]
+        public async Task<ActionResult<Response>> ConfirmMentor(ConfirmMentorCommand command)
+        {
+            var response = await _mediator.Send(command);
+
+            if (!response.IsSuccess)
+            {
+                return NotFound(new { Message = response.Message });
+            }
+
+            return Ok(response);
         }
 
         [HttpGet("getAllMentors")]
@@ -81,6 +96,19 @@ namespace Win.WebApi.Controllers
         {
             var response = await _mediator.Send(request);
             return response;
+        }
+
+        [HttpDelete("deleteCourse")]
+        public async Task<ActionResult<Response>> DeleteCourse([FromBody] DeleteCourseCommand command)
+        {
+            var response = await _mediator.Send(command);
+
+            if (!response.IsSuccess)
+            {
+                return StatusCode(response.StatusCode, new { Message = response.Message });
+            }
+
+            return Ok(response);
         }
 
     }

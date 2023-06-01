@@ -6,7 +6,7 @@ using Application.Common.Exceptions;
 
 namespace Application.Courses.Commands.UpdateCommands
 {
-    public class UpdateCourseCommandHandler : IRequestHandler<UpdateCourseCommand, CourseResponse>
+    public class UpdateCourseCommandHandler : IRequestHandler<UpdateCourseCommand, Response>
     {
         private readonly ICourseDbContext _dbContext;
 
@@ -15,12 +15,12 @@ namespace Application.Courses.Commands.UpdateCommands
             _dbContext = dbContext;
         }
 
-        public async Task<CourseResponse> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
+        public async Task<Response> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
         {
             var entity = await _dbContext.Courses.FirstOrDefaultAsync(c => c.Id == command.CourseId, cancellationToken);
             if (entity == null || entity.MentorId != command.MentorId)
             {
-                throw new NotFoundException(nameof(Courses), command.CourseId);
+                return new Response(400, "Course or Mentor is not found", true);
             }
 
             entity.Title = command.Title;
@@ -29,7 +29,7 @@ namespace Application.Courses.Commands.UpdateCommands
 
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return new CourseResponse(entity, 200, "Course updated successfully", true);
+            return new Response(200, "Course updated successfully", true);
         }
     }
 }
