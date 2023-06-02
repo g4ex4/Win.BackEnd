@@ -1,11 +1,6 @@
 ﻿using Application.Interfaces;
-using Application.JWT;
 using Domain.Responses;
 using MediatR;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace Application.Students.Commands.CreateCommands
 {

@@ -1,7 +1,9 @@
 ﻿using Application.Interfaces;
 using Application.Services;
+using Domain.Entities;
 using Domain.Responses;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
 
@@ -11,11 +13,13 @@ namespace Application.Students.Commands.UpdateCommands
     {
         private readonly IStudentDbContext _dbContext;
         private readonly EmailService _emailService;
+        private readonly IPasswordHasher<Student> _passwordHasher;
 
-        public StudentResetPasswordHandler(IStudentDbContext dbContext, EmailService emailService)
+        public StudentResetPasswordHandler(IStudentDbContext dbContext, EmailService emailService, IPasswordHasher<Student> passwordHasher)
         {
             _dbContext = dbContext;
             _emailService = emailService;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<Response> Handle(StudentResetPasswordCommand request, CancellationToken cancellationToken)
@@ -34,15 +38,14 @@ namespace Application.Students.Commands.UpdateCommands
                     int index = rnd.Next(chars.Length);
                     sb.Append(chars[index]);
                 }
-                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(sb.ToString());
+                string hashedPassword = _passwordHasher.HashPassword(user, sb.ToString());
                 user.PasswordHash = hashedPassword;
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 await _emailService.SendEmailResetPasswordAsync(request.Email, sb.ToString());
 
                 return new Response(200, "A temporary password has been sent to your email", true);
             }
-            return new Response(400, "User in not found", true);
-
+            return new Response(400, "User not found", true);
         }
     }
 }

@@ -12,7 +12,7 @@ using Persistance;
 namespace Persistance.Migrations.SqlServer
 {
     [DbContext(typeof(SqlServerContext))]
-    [Migration("20230601190041_SeedAddAdmin")]
+    [Migration("20230602043148_SeedAddAdmin")]
     partial class SeedAddAdmin
     {
         /// <inheritdoc />
