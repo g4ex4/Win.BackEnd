@@ -53,6 +53,34 @@ namespace Persistance
                 case "PostgreSQL":
                     services.AddDbContext<PgContext>(options => options.UseNpgsql(connectionString));
                     services.AddScoped<BaseDbContext, PgContext>();
+                    services.AddScoped<ICourseDbContext>(opt
+                        => opt.GetService<BaseDbContext>());
+                    services.AddScoped<IEmployeeDbContext>(opt
+                        => opt.GetService<BaseDbContext>());
+                    services.AddScoped<IStudentDbContext>(opt
+                        => opt.GetService<BaseDbContext>());
+                    services.AddScoped<ICategoryDbContext>(opt
+                        => opt.GetService<BaseDbContext>());
+                    services.AddScoped<IStudentSubscriptionDbContext>(opt
+                        => opt.GetService<BaseDbContext>());
+                    services.AddScoped<IStudentCourseDbContext>(opt
+                        => opt.GetService<BaseDbContext>());
+                    services.AddScoped<ISubDbContext>(opt
+                       => opt.GetService<BaseDbContext>());
+                    services.AddScoped<ICoursesSubscriptionsDbContext>(opt
+                       => opt.GetService<BaseDbContext>());
+                    services.AddScoped<IVideoDbContext>(opt
+                       => opt.GetService<BaseDbContext>());
+
+                    using (var db = new PgContext())
+                    {
+                        var (admin, isCreate) = db.SeedUsers();
+                        if (isCreate == true)
+                        {
+                            db.Employees.Add(admin);
+                            db.SaveChanges();
+                        }
+                    }
                     break;
                 default:
                     throw new InvalidOperationException("Invalid database provider specified.");

@@ -12,8 +12,8 @@ using Persistance;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(PgContext))]
-    [Migration("20230511084506_Init")]
-    partial class Init
+    [Migration("20230603123358_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -38,9 +38,6 @@ namespace Persistance.Migrations
 
                     b.Property<DateTime>("DateTimeUpdated")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -68,9 +65,6 @@ namespace Persistance.Migrations
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("MentorId")
                         .HasColumnType("integer");
@@ -123,9 +117,6 @@ namespace Persistance.Migrations
                     b.Property<bool>("IsConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
-
                     b.Property<string>("JobTitle")
                         .IsRequired()
                         .HasColumnType("text");
@@ -151,6 +142,9 @@ namespace Persistance.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
 
@@ -162,7 +156,26 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("RoleName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("Domain.Entities.Student", b =>
@@ -189,9 +202,6 @@ namespace Persistance.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("LockoutEnabled")
@@ -237,6 +247,9 @@ namespace Persistance.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("DateSubscribed")
                         .HasColumnType("timestamp with time zone");
 
@@ -246,10 +259,14 @@ namespace Persistance.Migrations
                     b.Property<DateTime>("DateTimeUpdated")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
+                    b.Property<int>("StudentId")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("StudentId");
 
                     b.ToTable("Subs");
                 });
@@ -270,9 +287,6 @@ namespace Persistance.Migrations
 
                     b.Property<DateTime>("DateTimeUpdated")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean");
 
                     b.Property<byte[]>("Media")
                         .IsRequired()
@@ -339,18 +353,13 @@ namespace Persistance.Migrations
 
             modelBuilder.Entity("Domain.Links.StudentSubscription", b =>
                 {
-                    b.Property<int>("StudenId")
+                    b.Property<int>("StudentId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SubscriptionId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("StudentId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("StudenId", "SubscriptionId");
-
-                    b.HasIndex("StudentId");
+                    b.HasKey("StudentId", "SubscriptionId");
 
                     b.HasIndex("SubscriptionId");
 
@@ -366,6 +375,36 @@ namespace Persistance.Migrations
                         .IsRequired();
 
                     b.Navigation("Mentor");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Employee", b =>
+                {
+                    b.HasOne("Domain.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Subscription", b =>
+                {
+                    b.HasOne("Domain.Entities.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Student", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Domain.Entities.Video", b =>
@@ -401,13 +440,13 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Links.CourseSubscription", b =>
                 {
                     b.HasOne("Domain.Entities.Course", "Course")
-                        .WithMany("CourseSubscription")
+                        .WithMany()
                         .HasForeignKey("CourseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Subscription", "Subscription")
-                        .WithMany("CourseSubscription")
+                        .WithMany()
                         .HasForeignKey("SubscriptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -445,7 +484,7 @@ namespace Persistance.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Entities.Subscription", "Subscription")
-                        .WithMany("StudentSubscription")
+                        .WithMany()
                         .HasForeignKey("SubscriptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -464,8 +503,6 @@ namespace Persistance.Migrations
                 {
                     b.Navigation("CategoryCourse");
 
-                    b.Navigation("CourseSubscription");
-
                     b.Navigation("StudentCourse");
 
                     b.Navigation("Videous");
@@ -479,13 +516,6 @@ namespace Persistance.Migrations
             modelBuilder.Entity("Domain.Entities.Student", b =>
                 {
                     b.Navigation("StudentCourse");
-
-                    b.Navigation("StudentSubscription");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Subscription", b =>
-                {
-                    b.Navigation("CourseSubscription");
 
                     b.Navigation("StudentSubscription");
                 });

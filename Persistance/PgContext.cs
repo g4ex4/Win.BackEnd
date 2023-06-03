@@ -5,6 +5,10 @@ namespace Persistance
 {
     public class PgContext : BaseDbContext
     {
+        public PgContext()
+        {
+
+        }
         public PgContext(DbContextOptions<BaseDbContext> options) : base(options)
         {
         }
