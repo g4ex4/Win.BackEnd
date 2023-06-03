@@ -23,11 +23,11 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<Response> Register(RegisterEmployeeCommand request)
+        public async Task<PersonResponse> Register(RegisterEmployeeCommand request)
         {
             if (!ModelState.IsValid)
             {
-                return new EmployeeResponse(400, "Invalid input data", false, null);
+                return new PersonResponse(400, "Invalid input data", false, null);
             }
             var response = await _mediator.Send(request);
 
@@ -40,18 +40,18 @@ namespace Win.WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new EmployeeResponse(400, "Invalid input data", false, null);
+                return new PersonResponse(400, "Invalid input data", false, null);
             }
             var response = await _mediator.Send(request);
 
-            return response;
+            return (PersonResponse)response;
         }
 
         [HttpPost("authorize")]
-        public async Task<Response> Authorize(AuthorizeEmployeeCommand request)
+        public async Task<PersonResponse> Authorize(AuthorizeEmployeeCommand request)
         {
             var response = await _mediator.Send(request);
-            return response;
+            return (PersonResponse)response;
         }
 
         [HttpGet("confirm-email")]
@@ -84,7 +84,7 @@ namespace Win.WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new EmployeeResponse(400, "Invalid input data", false, null);
+                return new PersonResponse(400, "Invalid input data", false, null);
             }
             var response = await _mediator.Send(request);
 

@@ -14,37 +14,37 @@ using BCryptNet = BCrypt.Net;
 
 namespace Application.Students.Commands.CreateCommands
 {
-    public class AuthorizeStudentHandler : IRequestHandler<AuthorizeStudentCommand, Response>
+    public class AuthorizeStudentHandler : IRequestHandler<AuthorizeStudentCommand, PersonResponse>
     {
         private readonly IStudentDbContext _dbContext;
         private readonly JwtSettings _jwtSettings;
         private readonly IPasswordHasher<Student> _passwordHasher;
 
-        public AuthorizeStudentHandler(IStudentDbContext dbContext,
-            IOptions<JwtSettings> jwtSettings, IPasswordHasher<Student> passwordHasher)
+        public AuthorizeStudentHandler(IStudentDbContext dbContext, IOptions<JwtSettings> jwtSettings, IPasswordHasher<Student> passwordHasher)
         {
             _dbContext = dbContext;
             _jwtSettings = jwtSettings.Value;
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<Response> Handle(AuthorizeStudentCommand command, CancellationToken cancellationToken)
+        public async Task<PersonResponse> Handle(AuthorizeStudentCommand command, CancellationToken cancellationToken)
         {
-
             var student = await _dbContext.Students.FirstOrDefaultAsync(e => e.Email == command.Email);
-            if (student == null || _passwordHasher
-                .VerifyHashedPassword(null, student.PasswordHash, command.PasswordHash) != PasswordVerificationResult.Success)
+            if (student == null || _passwordHasher.VerifyHashedPassword(null, student.PasswordHash, command.PasswordHash) != PasswordVerificationResult.Success)
             {
-                return new Response(401, "Unauthorized", false);
+                return new PersonResponse(401, "Unauthorized", false, null);
             }
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, student.Id.ToString()),
-            };
+        {
+            new Claim(ClaimTypes.NameIdentifier, student.Id.ToString())
+        };
 
             var token = GenerateJwtToken(claims);
-            return new Response(200, "Authorized", true, token);
+            return new PersonResponse(200, "Authorized", true, student)
+            {
+                JwtToken = token
+            };
         }
 
         private string GenerateJwtToken(IEnumerable<Claim> claims)

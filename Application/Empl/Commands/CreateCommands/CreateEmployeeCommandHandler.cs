@@ -15,15 +15,14 @@ using Employee = Domain.Entities.Employee;
 
 namespace Application.Empl.Commands.CreateCommands
 {
-    public class RegisterEmployeeHandler : IRequestHandler<RegisterEmployeeCommand, Response>
+    public class RegisterEmployeeHandler : IRequestHandler<RegisterEmployeeCommand, PersonResponse>
     {
         private readonly IEmployeeDbContext _dbContext;
         private readonly EmailService _emailService;
         private readonly JwtSettings _jwtSettings;
         private readonly IPasswordHasher<Employee> _passwordHasher;
 
-        public RegisterEmployeeHandler(IEmployeeDbContext dbContext, EmailService emailService,
-            IOptions<JwtSettings> jwtSettings, IPasswordHasher<Employee> passwordHasher)
+        public RegisterEmployeeHandler(IEmployeeDbContext dbContext, EmailService emailService, IOptions<JwtSettings> jwtSettings, IPasswordHasher<Employee> passwordHasher)
         {
             _dbContext = dbContext;
             _emailService = emailService;
@@ -31,13 +30,12 @@ namespace Application.Empl.Commands.CreateCommands
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<Response> Handle(RegisterEmployeeCommand command, CancellationToken cancellationToken)
+        public async Task<PersonResponse> Handle(RegisterEmployeeCommand command, CancellationToken cancellationToken)
         {
-            var isEmailExists = await _dbContext.Employees
-                .AnyAsync(employee => employee.Email == command.Email, cancellationToken);
+            var isEmailExists = await _dbContext.Employees.AnyAsync(employee => employee.Email == command.Email, cancellationToken);
             if (isEmailExists)
             {
-                return new Response(400, "The mail already exists.", false);
+                return new PersonResponse(400, "The mail already exists.", false, null);
             }
 
             string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);
@@ -52,7 +50,7 @@ namespace Application.Empl.Commands.CreateCommands
                 Education = command.Education,
                 RoleId = 2,
                 DateTimeAdded = DateTime.UtcNow,
-                DateTimeUpdated = DateTime.UtcNow,
+                DateTimeUpdated = DateTime.UtcNow
             };
 
             await _dbContext.Employees.AddAsync(emp);
@@ -62,12 +60,15 @@ namespace Application.Empl.Commands.CreateCommands
             var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, emp.Id.ToString()),
-            new Claim(ClaimTypes.Role, emp.RoleId.ToString()),
+            new Claim(ClaimTypes.Role, emp.RoleId.ToString())
         };
 
             var token = GenerateJwtToken(claims);
 
-            return new Response(200, "Employee added successfully", true, token);
+            return new PersonResponse(200, "Employee added successfully", true, emp)
+            {
+                JwtToken = token
+            };
         }
 
         private string GenerateJwtToken(IEnumerable<Claim> claims)

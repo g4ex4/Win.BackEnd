@@ -14,7 +14,7 @@ using System.Text;
 
 namespace Application.Empl.Commands.CreateCommands
 {
-    public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand, Response>
+    public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand, PersonResponse>
     {
         private readonly IStudentDbContext _dbContext;
         private readonly EmailService _emailService;
@@ -30,12 +30,12 @@ namespace Application.Empl.Commands.CreateCommands
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<Response> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
+        public async Task<PersonResponse> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
         {
             var isEmailExists = await _dbContext.Students.AnyAsync(student => student.Email == command.Email, cancellationToken);
             if (isEmailExists)
             {
-                return new Response(400, "The mail already exists.", false);
+                return new PersonResponse(400, "The mail already exists.", false, null);
             }
 
             string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);
@@ -45,7 +45,7 @@ namespace Application.Empl.Commands.CreateCommands
                 Email = command.Email,
                 PasswordHash = hashedPassword,
                 DateTimeAdded = DateTime.UtcNow,
-                DateTimeUpdated = DateTime.UtcNow,
+                DateTimeUpdated = DateTime.UtcNow
             };
 
             await _dbContext.Students.AddAsync(student);
@@ -53,14 +53,16 @@ namespace Application.Empl.Commands.CreateCommands
             await _emailService.SendStudentEmailAsync(command.Email);
 
             var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, student.Id.ToString()),
-
-            };
+        {
+            new Claim(ClaimTypes.NameIdentifier, student.Id.ToString())
+        };
 
             var token = GenerateJwtToken(claims);
 
-            return new Response(200, "Student added successfully", true, token);
+            return new PersonResponse(200, "Student added successfully", true, student)
+            {
+                JwtToken = token
+            };
         }
 
         private string GenerateJwtToken(IEnumerable<Claim> claims)
@@ -82,6 +84,5 @@ namespace Application.Empl.Commands.CreateCommands
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-
     }
 }

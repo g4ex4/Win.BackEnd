@@ -1,4 +1,6 @@
 ﻿using Application.Interfaces;
+using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,6 +38,16 @@ namespace Persistance
                        => opt.GetService<BaseDbContext>());
                     services.AddScoped<IVideoDbContext>(opt
                        => opt.GetService<BaseDbContext>());
+
+                    using(var db = new SqlServerContext())
+                    {
+                        var (admin,isCreate) = db.SeedUsers();
+                        if (isCreate == true)
+                        {
+                            db.Employees.Add(admin);
+                            db.SaveChanges();
+                        }
+                    }
 
                     break;
                 case "PostgreSQL":

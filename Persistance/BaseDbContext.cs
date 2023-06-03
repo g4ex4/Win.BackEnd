@@ -14,7 +14,7 @@ namespace Persistance
     {
         public BaseDbContext()
         {
-            Database.EnsureCreated();
+            
         }
         public BaseDbContext(DbContextOptions<BaseDbContext> options) : base(options)
         {
@@ -59,17 +59,16 @@ namespace Persistance
                 .HasForeignKey(v => v.CourseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            SeedUsers();
+            
         }
 
-        private void SeedUsers(ModelBuilder builder)
+        public (Employee?,bool) SeedUsers()
         {
             if (Employees.Any())
-                return;
+                return (null, false);
 
             Employee admin = new Employee()
             {
-                Id = 100,
                 UserName = "Admin",
                 Email = "1goldyshsergei1@gmail.com",
                 EmailConfirmed = true,
@@ -82,8 +81,8 @@ namespace Persistance
 
             PasswordHasher<Employee> passwordHasher = new PasswordHasher<Employee>();
             admin.PasswordHash = passwordHasher.HashPassword(admin, "111");
-            builder.Entity<Employee>().HasData(admin);
 
+            return (admin,true);
         }
 
     }

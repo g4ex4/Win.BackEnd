@@ -32,14 +32,14 @@ namespace Win.WebApi.Controllers
             }
             var response = await _mediator.Send(request);
 
-            return response;
+            return (PersonResponse)response;
         }
 
         [HttpPost("authorize")]
         public async Task<Response> Authorize(AuthorizeStudentCommand request)
         {
             var response = await _mediator.Send(request);
-            return response;
+            return (PersonResponse)response;
         }
 
         [HttpPut("changePassword")]

@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Application.Empl.Commands.CreateCommands
 {
-    public class RegisterEmployeeCommand : IRequest<Response>
+    public class RegisterEmployeeCommand : IRequest<PersonResponse>
     {
         [Required]
         public string UserName { get; set; }
