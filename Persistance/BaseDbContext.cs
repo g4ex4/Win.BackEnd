@@ -72,6 +72,7 @@ namespace Persistance
                 UserName = "Admin",
                 Email = "1goldyshsergei1@gmail.com",
                 EmailConfirmed = true,
+                IsConfirmed= true,
                 RoleId = 1,
                 Education = "IT Academy",
                 Experience = "10 Year",
