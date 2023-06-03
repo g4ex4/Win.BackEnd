@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Services;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Responses;
 using MediatR;
@@ -9,25 +10,25 @@ using BCryptNet = BCrypt.Net;
 
 namespace Application.Empl.Commands.UpdateCommands
 {
-    public class ChangePasswordEmployeeCommandHandler : IRequestHandler<ChangePasswordEmployeeCommand, Response>
+    public class ChangePasswordEmployeeCommandHandler : IRequestHandler<ChangePasswordEmployeeCommand, PersonResponse>
     {
         private readonly IEmployeeDbContext _dbContext;
         private readonly EmailService _emailService;
         private readonly IPasswordHasher<Employee> _passwordHasher;
 
-        public ChangePasswordEmployeeCommandHandler(IEmployeeDbContext userManager, EmailService emailService, IPasswordHasher<Employee> passwordHasher)
+        public ChangePasswordEmployeeCommandHandler(IEmployeeDbContext dbContext, EmailService emailService, IPasswordHasher<Employee> passwordHasher)
         {
-            _dbContext = userManager;
+            _dbContext = dbContext;
             _emailService = emailService;
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<Response> Handle(ChangePasswordEmployeeCommand command, CancellationToken cancellationToken)
+        public async Task<PersonResponse> Handle(ChangePasswordEmployeeCommand command, CancellationToken cancellationToken)
         {
             var entity = await _dbContext.Employees.FirstOrDefaultAsync(c => c.Email == command.Email, cancellationToken);
             if (entity == null || _passwordHasher.VerifyHashedPassword(entity, entity.PasswordHash, command.OldPassword) != PasswordVerificationResult.Success)
             {
-                return new Response(401, "User is not found or password is incorrect", false);
+                return new PersonResponse(401, "User is not found or password is incorrect", false, null);
             }
 
             string hashedNewPassword = _passwordHasher.HashPassword(entity, command.NewPassword);
@@ -36,7 +37,13 @@ namespace Application.Empl.Commands.UpdateCommands
             await _dbContext.SaveChangesAsync(cancellationToken);
             await _emailService.SendEmailInfoAsync(command.Email);
 
-            return new Response(200, "Password changed successfully", true);
+            var person = new Person
+            {
+                Id = entity.Id,
+                UserName = entity.UserName
+            };
+
+            return new PersonResponse(200, "Password changed successfully", true, person);
         }
     }
 }

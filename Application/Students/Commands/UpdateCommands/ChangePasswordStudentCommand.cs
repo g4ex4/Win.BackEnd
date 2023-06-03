@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Application.Empl.Commands.UpdateCommands
 {
-    public class ChangePasswordStudentCommand : IRequest<Response>
+    public class ChangePasswordStudentCommand : IRequest<PersonResponse>
     {
         [Required]
         public string Email { get; set; }

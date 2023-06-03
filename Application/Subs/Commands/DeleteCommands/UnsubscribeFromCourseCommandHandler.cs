@@ -34,8 +34,7 @@ namespace Application.Subs.Commands.DeleteCommands
                 if (studentCourse == null)
                     return new Response(404, "The student is not enrolled in this course", false);
 
-                _studentCourseDbContext.StudentCourses.Remove(studentCourse);
-                await _studentCourseDbContext.SaveChangesAsync(cancellationToken);
+                
 
                 var coursSubs = await _CourseSubscripDbContext.CoursesSubscriptions
                     .FirstOrDefaultAsync(g => g.CourseId == command.CourseId);
@@ -49,8 +48,7 @@ namespace Application.Subs.Commands.DeleteCommands
                 if (subs == null)
                     return new Response(404, "Unable to find course subscription", false);
 
-                _subDbContext.Subs.Remove(subs);
-                await _subDbContext.SaveChangesAsync(cancellationToken);
+                
 
                 var studentSubs = await _studentsubDbContext.StudentSubscriptions
                     .FirstOrDefaultAsync(p => p.StudentId == command.StudentId && p.SubscriptionId == coursSubs.SubscriptionId);
@@ -58,11 +56,17 @@ namespace Application.Subs.Commands.DeleteCommands
                 if (studentSubs == null)
                     return new Response(404, "Unable to find student subscription record", false);
 
-                _studentsubDbContext.StudentSubscriptions.Remove(studentSubs);
-                await _studentsubDbContext.SaveChangesAsync(cancellationToken);
+                _subDbContext.Subs.Remove(subs);
+                await _subDbContext.SaveChangesAsync(cancellationToken);
 
-                _CourseSubscripDbContext.CoursesSubscriptions.Remove(coursSubs);
-                await _CourseSubscripDbContext.SaveChangesAsync(cancellationToken);
+                _studentCourseDbContext.StudentCourses.Remove(studentCourse);
+                await _studentCourseDbContext.SaveChangesAsync(cancellationToken);
+
+                //_studentsubDbContext.StudentSubscriptions.Remove(studentSubs);
+                //await _studentsubDbContext.SaveChangesAsync(cancellationToken);
+
+                //_CourseSubscripDbContext.CoursesSubscriptions.Remove(coursSubs);
+                //await _CourseSubscripDbContext.SaveChangesAsync(cancellationToken);
 
                 return new Response(200, "Студент успешно отписан от курса", true);
             }

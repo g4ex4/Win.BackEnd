@@ -35,8 +35,8 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPut("changePassword")]
-        [Authorize(Roles = "2")]
-        public async Task<Response> ChangePassword(ChangePasswordEmployeeCommand request)
+        [Authorize(Roles = "1,2")]
+        public async Task<PersonResponse> ChangePassword(ChangePasswordEmployeeCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -80,7 +80,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("resetPassword")]
-        public async Task<Response> ResetPassword(ResetPasswordCommand request)
+        public async Task<PersonResponse> ResetPassword(ResetPasswordCommand request)
         {
             if (!ModelState.IsValid)
             {

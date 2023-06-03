@@ -13,9 +13,12 @@ namespace Domain.Responses
         public EntityResponse(BaseEntity<T> entity, int statusCode, string message, bool isSuccess)
             : base(statusCode, message, isSuccess)
         {
-            Id = entity.Id;
-            DateTimeAdded = entity.DateTimeAdded.ToString(dateFormat);
-            DateTimeUpdated = entity.DateTimeUpdated.ToString(dateFormat);
+            if (entity != null)
+            {
+                Id = entity.Id;
+                DateTimeAdded = entity.DateTimeAdded.ToString(dateFormat);
+                DateTimeUpdated = entity.DateTimeUpdated.ToString(dateFormat);
+            }
         }
 
         public T Id { get; set; }

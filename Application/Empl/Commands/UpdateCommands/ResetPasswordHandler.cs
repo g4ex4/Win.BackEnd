@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Application.Services;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Responses;
 using MediatR;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace Application.Empl.Commands.UpdateCommands
 {
-    public class ResetPasswordHandler : IRequestHandler<ResetPasswordCommand, Response>
+    public class ResetPasswordHandler : IRequestHandler<ResetPasswordCommand, PersonResponse>
     {
         private readonly IEmployeeDbContext _dbContext;
         private readonly EmailService _emailService;
@@ -22,7 +23,7 @@ namespace Application.Empl.Commands.UpdateCommands
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<Response> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
+        public async Task<PersonResponse> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
         {
             var user = await _dbContext.Employees.FirstOrDefaultAsync(x => x.Email == request.Email);
 
@@ -44,10 +45,16 @@ namespace Application.Empl.Commands.UpdateCommands
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 await _emailService.SendEmailResetPasswordAsync(request.Email, sb.ToString());
 
-                return new Response(200, "A temporary password has been sent to your email", true);
+                var person = new Person
+                {
+                    Id = user.Id,
+                    UserName = user.UserName
+                };
+
+                return new PersonResponse(200, "A temporary password has been sent to your email", true, person);
             }
 
-            return new Response(400, "User not found", true);
+            return new PersonResponse(400, "User not found", false, null);
         }
     }
 }

@@ -5,7 +5,7 @@ using MediatR;
 
 namespace Application.Students.Commands.UpdateCommands
 {
-    public class StudentResetPasswordCommand : IRequest<Response>
+    public class StudentResetPasswordCommand : IRequest<PersonResponse>
     {
         [Required]
         public string Email { get; set; }

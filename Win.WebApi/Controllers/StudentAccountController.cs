@@ -24,11 +24,11 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<Response> Register(CreateStudentCommand request)
+        public async Task<PersonResponse> Register(CreateStudentCommand request)
         {
             if (!ModelState.IsValid)
             {
-                return new StudentResponse(400, "Invalid input data", false, null);
+                return new PersonResponse(400, "Invalid input data", false, null);
             }
             var response = await _mediator.Send(request);
 
@@ -36,7 +36,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("authorize")]
-        public async Task<Response> Authorize(AuthorizeStudentCommand request)
+        public async Task<PersonResponse> Authorize(AuthorizeStudentCommand request)
         {
             var response = await _mediator.Send(request);
             return (PersonResponse)response;
@@ -44,11 +44,11 @@ namespace Win.WebApi.Controllers
 
         [HttpPut("changePassword")]
         [Authorize]
-        public async Task<Response> ChangePassword(ChangePasswordStudentCommand request)
+        public async Task<PersonResponse> ChangePassword(ChangePasswordStudentCommand request)
         {
             if (!ModelState.IsValid)
             {
-                return new StudentResponse(400, "Invalid input data", false, null);
+                return new PersonResponse(400, "Invalid input data", false, null);
             }
             var response = await _mediator.Send(request);
 
@@ -56,11 +56,11 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("resetPassword")]
-        public async Task<Response> ResetPassword(StudentResetPasswordCommand request)
+        public async Task<PersonResponse> ResetPassword(StudentResetPasswordCommand request)
         {
             if (!ModelState.IsValid)
             {
-                return new StudentResponse(400, "Invalid input data", false, null);
+                return new PersonResponse(400, "Invalid input data", false, null);
             }
             var response = await _mediator.Send(request);
 

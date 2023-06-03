@@ -22,20 +22,26 @@ namespace Win.WebApi.Controllers
 
         [HttpPost("addSubscribtion")]
         [Authorize]
-        public async Task<Response> AddSubscribtion(SubscribeToCourseCommand request)
+        public async Task<ActionResult<SubscriptionResponse>> AddSubscribtion(SubscribeToCourseCommand request)
         {
             if (!ModelState.IsValid)
             {
-                return new Response(400, "Invalid input data", false);
+                return new SubscriptionResponse(null, 400, "Invalid input data", false);
             }
+
             var response = await _mediator.Send(request);
 
-            return response;
+            if (!response.IsSuccess)
+            {
+                return StatusCode(response.StatusCode, new { Message = response.Message });
+            }
+
+            return Ok(response);
         }
 
         [HttpDelete("unsubscribe")]
         [Authorize]
-        public async Task<Response> UnsubscribeFromCourse([FromBody] UnsubscribeFromCourseCommand command)
+        public async Task<ActionResult<Response>> UnsubscribeFromCourse([FromBody] UnsubscribeFromCourseCommand command)
         {
             var response = await _mediator.Send(command);
             return response;

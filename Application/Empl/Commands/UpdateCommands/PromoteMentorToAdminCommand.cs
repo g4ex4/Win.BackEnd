@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Empl.Commands.UpdateCommands
 {
-    public class ConfirmMentorCommand : IRequest<PersonResponse>
+    public class PromoteMentorToAdminCommand : IRequest<PersonResponse>
     {
         public int MentorId { get; set; }
     }

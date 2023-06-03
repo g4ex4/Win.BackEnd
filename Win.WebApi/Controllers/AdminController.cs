@@ -24,7 +24,20 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("confirmMentor")]
-        public async Task<ActionResult<Response>> ConfirmMentor(ConfirmMentorCommand command)
+        public async Task<ActionResult<PersonResponse>> ConfirmMentor(ConfirmMentorCommand command)
+        {
+            var response = await _mediator.Send(command);
+
+            if (!response.IsSuccess)
+            {
+                return NotFound(new { Message = response.Message });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost("promoteMentorToAdmin")]
+        public async Task<ActionResult<PersonResponse>> PromoteMentorToAdmin(PromoteMentorToAdminCommand command)
         {
             var response = await _mediator.Send(command);
 
@@ -85,7 +98,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpDelete("Delete-Mentor")]
-        public async Task<Response> DeleteEmployee(DeleteEmplCommand request)
+        public async Task<PersonResponse> DeleteEmployee(DeleteEmplCommand request)
         {
             var response = await _mediator.Send(request);
             return response;

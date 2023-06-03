@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Application.Students.Commands.UpdateCommands
 {
-    public class StudentResetPasswordHandler : IRequestHandler<StudentResetPasswordCommand, Response>
+    public class StudentResetPasswordHandler : IRequestHandler<StudentResetPasswordCommand, PersonResponse>
     {
         private readonly IStudentDbContext _dbContext;
         private readonly EmailService _emailService;
@@ -22,7 +22,7 @@ namespace Application.Students.Commands.UpdateCommands
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<Response> Handle(StudentResetPasswordCommand request, CancellationToken cancellationToken)
+        public async Task<PersonResponse> Handle(StudentResetPasswordCommand request, CancellationToken cancellationToken)
         {
             var user = await _dbContext.Students.FirstOrDefaultAsync(x => x.Email == request.Email);
 
@@ -43,9 +43,9 @@ namespace Application.Students.Commands.UpdateCommands
                 await _dbContext.SaveChangesAsync(cancellationToken);
                 await _emailService.SendEmailResetPasswordAsync(request.Email, sb.ToString());
 
-                return new Response(200, "A temporary password has been sent to your email", true);
+                return new PersonResponse(200, "A temporary password has been sent to your email", true, user);
             }
-            return new Response(400, "User not found", true);
+            return new PersonResponse(400, "User not found", true, null);
         }
     }
 }

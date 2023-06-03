@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Empl.Commands.UpdateCommands
 {
-    public class ChangePasswordStudentCommandHandler : IRequestHandler<ChangePasswordStudentCommand, Response>
+    public class ChangePasswordStudentCommandHandler : IRequestHandler<ChangePasswordStudentCommand, PersonResponse>
     {
         private readonly IStudentDbContext _dbContext;
         private readonly EmailService _emailService;
@@ -21,12 +21,12 @@ namespace Application.Empl.Commands.UpdateCommands
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<Response> Handle(ChangePasswordStudentCommand command, CancellationToken cancellationToken)
+        public async Task<PersonResponse> Handle(ChangePasswordStudentCommand command, CancellationToken cancellationToken)
         {
             var entity = await _dbContext.Students.FirstOrDefaultAsync(c => c.Email == command.Email, cancellationToken);
             if (entity == null || _passwordHasher.VerifyHashedPassword(entity, entity.PasswordHash, command.OldPassword) != PasswordVerificationResult.Success)
             {
-                return new Response(401, "User not found or incorrect password", false);
+                return new PersonResponse(401, "User not found or incorrect password", false, null);
             }
 
             string hashedNewPassword = _passwordHasher.HashPassword(entity, command.NewPassword);
@@ -34,7 +34,7 @@ namespace Application.Empl.Commands.UpdateCommands
             await _dbContext.SaveChangesAsync(cancellationToken);
             await _emailService.SendEmailInfoAsync(command.Email);
 
-            return new Response(200, "Password changed successfully", true);
+            return new PersonResponse(200, "Password changed successfully", true, entity);
         }
     }
 }
