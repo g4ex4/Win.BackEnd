@@ -86,5 +86,28 @@ namespace Persistance
             return (admin,true);
         }
 
+        public (List<Role>?, bool) SeedRole()
+        {
+            if (Roles.Any())
+                return (null, false);
+            Role role = new Role()
+            {
+                
+                RoleName = "Admin"
+            };
+            Role role1 = new Role()
+            {
+                
+                RoleName = "Employee"
+            };
+            List<Role> roles = new List<Role>();
+            roles.Add(role);
+            roles.Add(role1);
+
+            return (roles, true);
+
+        }
+
+
     }
 }

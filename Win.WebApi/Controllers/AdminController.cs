@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Win.WebApi.Controllers
 {
@@ -17,10 +18,12 @@ namespace Win.WebApi.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<AccountController> _logger;
 
-        public AdminController(IMediator mediator)
+        public AdminController(IMediator mediator, ILogger<AccountController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpPost("confirmMentor")]
@@ -45,6 +48,8 @@ namespace Win.WebApi.Controllers
             {
                 return NotFound(new { Message = response.Message });
             }
+            _logger.LogInformation($"Mentor with ID {command.MentorId} " +
+                    $" promoted to administrator");
 
             return Ok(response);
         }
@@ -101,6 +106,9 @@ namespace Win.WebApi.Controllers
         public async Task<PersonResponse> DeleteEmployee(DeleteEmplCommand request)
         {
             var response = await _mediator.Send(request);
+
+            _logger.LogInformation($"Mentor with ID {request.EmployeeId} removed");
+
             return response;
         }
 
@@ -108,6 +116,9 @@ namespace Win.WebApi.Controllers
         public async Task<Response> DeleteStudent(DeleteStudentCommand request)
         {
             var response = await _mediator.Send(request);
+
+            _logger.LogInformation($"Student with ID {request.StudentId} removed");
+
             return response;
         }
 
@@ -120,6 +131,8 @@ namespace Win.WebApi.Controllers
             {
                 return StatusCode(response.StatusCode, new { Message = response.Message });
             }
+
+            _logger.LogInformation($"Course with ID {command.CourseId} removed");
 
             return Ok(response);
         }

@@ -14,7 +14,7 @@ using BCryptNet = BCrypt.Net;
 
 namespace Application.Empl.Commands.CreateCommands
 {
-    public class AuthorizeEmployeeHandler : IRequestHandler<AuthorizeEmployeeCommand, PersonResponse>
+    public class AuthorizeEmployeeHandler : IRequestHandler<AuthorizeEmployeeCommand, EmployeeResponse>
     {
         private readonly IEmployeeDbContext _dbContext;
         private readonly JwtSettings _jwtSettings;
@@ -27,13 +27,13 @@ namespace Application.Empl.Commands.CreateCommands
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<PersonResponse> Handle(AuthorizeEmployeeCommand command, CancellationToken cancellationToken)
+        public async Task<EmployeeResponse> Handle(AuthorizeEmployeeCommand command, CancellationToken cancellationToken)
         {
             var employee = await _dbContext.Employees.FirstOrDefaultAsync(e => e.Email == command.Email);
             if (employee == null || _passwordHasher
                 .VerifyHashedPassword(null, employee.PasswordHash, command.PasswordHash) != PasswordVerificationResult.Success)
             {
-                return new PersonResponse(401, "Unauthorized", false, null);
+                return new EmployeeResponse(401, "Unauthorized", false, null);
             }
 
             var claims = new List<Claim>
@@ -43,7 +43,7 @@ namespace Application.Empl.Commands.CreateCommands
     };
 
             var token = GenerateJwtToken(claims);
-            return new PersonResponse(200, "Authorized", true, employee)
+            return new EmployeeResponse(200, "Authorized", true, employee)
             {
                 JwtToken = token
             };

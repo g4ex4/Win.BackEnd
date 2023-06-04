@@ -16,21 +16,22 @@ namespace Win.WebApi.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IMediator _mediator;
+        
 
-        public AccountController(IMediator mediator, BaseDbContext employeeDbContext)
+        public AccountController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         [HttpPost("register")]
-        public async Task<PersonResponse> Register(RegisterEmployeeCommand request)
+        public async Task<EmployeeResponse> Register(RegisterEmployeeCommand request)
         {
             if (!ModelState.IsValid)
             {
-                return new PersonResponse(400, "Invalid input data", false, null);
+                return new EmployeeResponse(400, "Invalid input data", false, null);
             }
             var response = await _mediator.Send(request);
-
+            
             return response;
         }
 
@@ -48,10 +49,11 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("authorize")]
-        public async Task<PersonResponse> Authorize(AuthorizeEmployeeCommand request)
+        public async Task<EmployeeResponse> Authorize(AuthorizeEmployeeCommand request)
         {
             var response = await _mediator.Send(request);
-            return (PersonResponse)response;
+            
+            return (EmployeeResponse)response;
         }
 
         [HttpGet("confirm-email")]
@@ -90,6 +92,8 @@ namespace Win.WebApi.Controllers
 
             return response;
         }
+
+
 
 
     }

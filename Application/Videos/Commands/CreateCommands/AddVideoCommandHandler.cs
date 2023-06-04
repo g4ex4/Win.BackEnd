@@ -1,17 +1,22 @@
 ﻿using Application.Interfaces;
+using Application.Subs.Commands.DeleteCommands;
 using Domain.Entities;
 using Domain.Responses;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Videos.Commands.CreateCommands
 {
     public class AddVideoCommandHandler : IRequestHandler<AddVideoCommand, Response>
     {
         private readonly IVideoDbContext _videodbContext;
+        private readonly ILogger<AddVideoCommandHandler> _logger;
 
-        public AddVideoCommandHandler(IVideoDbContext videoDbContext)
+        public AddVideoCommandHandler(IVideoDbContext videoDbContext,
+            ILogger<AddVideoCommandHandler> logger)
         {
             _videodbContext = videoDbContext;
+            _logger = logger;
         }
 
         public async Task<Response> Handle(AddVideoCommand command, CancellationToken cancellationToken)
@@ -40,6 +45,7 @@ namespace Application.Videos.Commands.CreateCommands
             }
             catch (Exception e)
             {
+                _logger.LogError($"{e}");
                 return new Response(400, $"An error occurred while adding the video: {e.Message}", false);
             }
         }

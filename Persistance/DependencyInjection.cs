@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
+using Serilog.Sinks.MSSqlServer;
+using Serilog.Sinks.PostgreSQL;
 
 namespace Persistance
 {
@@ -14,6 +18,8 @@ namespace Persistance
         {
             var connectionString = configuration.GetConnectionString("SqlServerDbContextConnection");
             var dbProvider = configuration.GetSection("DbProvider").Value;
+
+            
 
             switch (dbProvider)
             {
@@ -39,9 +45,32 @@ namespace Persistance
                     services.AddScoped<IVideoDbContext>(opt
                        => opt.GetService<BaseDbContext>());
 
-                    using(var db = new SqlServerContext())
+                    Log.Logger = new LoggerConfiguration()
+                        .MinimumLevel.Information()
+                        .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+                        .Enrich.FromLogContext()
+                        .WriteTo.MSSqlServer
+                        (connectionString, sinkOptions: new MSSqlServerSinkOptions
+                        {
+                            TableName = "Logs",
+                            AutoCreateSqlTable = true
+                        }
+                        ).CreateLogger();
+                            services.AddLogging(loggingBuilder => {
+                                loggingBuilder.ClearProviders();
+                                loggingBuilder.AddSerilog(Log.Logger);
+                            });
+
+                    using (var db = new SqlServerContext())
                     {
-                        var (admin,isCreate) = db.SeedUsers();
+                        var (role, isCreateRoles) = db.SeedRole();
+                        if (isCreateRoles == true)
+                        {
+                            db.Roles.AddRange(role);
+                            db.SaveChanges();
+                        }
+
+                        var (admin, isCreate) = db.SeedUsers();
                         if (isCreate == true)
                         {
                             db.Employees.Add(admin);
@@ -74,6 +103,13 @@ namespace Persistance
 
                     using (var db = new PgContext())
                     {
+                        var (role, isCreateRoles) = db.SeedRole();
+                        if (isCreateRoles == true)
+                        {
+                            db.Roles.AddRange(role);
+                            db.SaveChanges();
+                        }
+
                         var (admin, isCreate) = db.SeedUsers();
                         if (isCreate == true)
                         {

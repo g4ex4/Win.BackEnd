@@ -1,9 +1,11 @@
 ﻿using Application.Interfaces;
+using Application.Students.Commands.CreateCommands;
 using Domain.Entities;
 using Domain.Links;
 using Domain.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Subs.Commands.CreateCommands
 {
@@ -15,10 +17,12 @@ namespace Application.Subs.Commands.CreateCommands
         private readonly IStudentSubscriptionDbContext _studentsubDbContext;
         private readonly IStudentCourseDbContext _studentCourseDbContext;
         private readonly ICoursesSubscriptionsDbContext _CourseSubscripDbContext;
+        private readonly ILogger<SubscribeToCourseCommandHandler> _logger;
 
         public SubscribeToCourseCommandHandler(IStudentDbContext studentRepository, ICourseDbContext courseRepository,
             ISubDbContext subscriptionRepository, IStudentSubscriptionDbContext studentSubscriptionDbContext,
-            IStudentCourseDbContext studentCourseDbContext, ICoursesSubscriptionsDbContext coursesSubscriptionsDbContext)
+            IStudentCourseDbContext studentCourseDbContext, ICoursesSubscriptionsDbContext coursesSubscriptionsDbContext,
+            ILogger<SubscribeToCourseCommandHandler> logger)
         {
             _studentRepository = studentRepository;
             _courseRepository = courseRepository;
@@ -26,6 +30,7 @@ namespace Application.Subs.Commands.CreateCommands
             _studentsubDbContext = studentSubscriptionDbContext;
             _studentCourseDbContext = studentCourseDbContext;
             _CourseSubscripDbContext = coursesSubscriptionsDbContext;
+            _logger = logger;
         }
 
         public async Task<SubscriptionResponse> Handle(SubscribeToCourseCommand command, CancellationToken cancellationToken)
@@ -90,6 +95,7 @@ namespace Application.Subs.Commands.CreateCommands
             }
             catch (Exception e)
             {
+                _logger.LogError($"{e}");
                 return new SubscriptionResponse(null, 400, $"An error occurred while creating a subscription: {e.Message}", false);
             }
         }

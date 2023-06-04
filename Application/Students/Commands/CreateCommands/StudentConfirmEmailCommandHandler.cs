@@ -1,16 +1,20 @@
 ﻿using Application.Interfaces;
 using Domain.Responses;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Students.Commands.CreateCommands
 {
     public class StudentConfirmEmailCommandHandler : IRequestHandler<StudentConfirmEmailCommand, Response>
     {
         private readonly IStudentDbContext _context;
+        private readonly ILogger<StudentConfirmEmailCommandHandler> _logger;
 
-        public StudentConfirmEmailCommandHandler(IStudentDbContext context)
+        public StudentConfirmEmailCommandHandler(IStudentDbContext context,
+            ILogger<StudentConfirmEmailCommandHandler> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<Response> Handle(StudentConfirmEmailCommand request, CancellationToken cancellationToken)
@@ -23,11 +27,12 @@ namespace Application.Students.Commands.CreateCommands
 
                 user.EmailConfirmed = true;
                 await _context.SaveChangesAsync(cancellationToken);
-
+                
                 return new Response(200, "You have verified your account", true);
             }
             catch (Exception ex)
             {
+                _logger.LogError($"{ex}");
                 return new Response(400, "Something went wrong " + ex.Message, false);
             }
         }

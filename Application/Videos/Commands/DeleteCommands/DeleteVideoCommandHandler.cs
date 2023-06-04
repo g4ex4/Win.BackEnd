@@ -1,16 +1,21 @@
 ﻿using Application.Interfaces;
+using Application.Videos.Commands.CreateCommands;
 using Domain.Responses;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Videos.Commands.DeleteCommands
 {
     public class DeleteVideoCommandHandler : IRequestHandler<DeleteVideoCommand, Response>
     {
         private readonly IVideoDbContext _videoDbContext;
+        private readonly ILogger<DeleteVideoCommandHandler> _logger;
 
-        public DeleteVideoCommandHandler(IVideoDbContext videoDbContext)
+        public DeleteVideoCommandHandler(IVideoDbContext videoDbContext,
+            ILogger<DeleteVideoCommandHandler> logger)
         {
             _videoDbContext = videoDbContext;
+            _logger = logger;
         }
 
         public async Task<Response> Handle(DeleteVideoCommand command, CancellationToken cancellationToken)
@@ -30,6 +35,7 @@ namespace Application.Videos.Commands.DeleteCommands
             }
             catch (Exception e)
             {
+                _logger.LogError($"{e}");
                 return new Response(400, $"An error occurred while deleting the video: {e.Message}", false);
             }
         }

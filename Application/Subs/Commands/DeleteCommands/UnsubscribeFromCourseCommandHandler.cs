@@ -1,7 +1,9 @@
 ﻿using Application.Interfaces;
+using Application.Subs.Commands.CreateCommands;
 using Domain.Responses;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Subs.Commands.DeleteCommands
 {
@@ -11,16 +13,19 @@ namespace Application.Subs.Commands.DeleteCommands
         private readonly IStudentSubscriptionDbContext _studentsubDbContext;
         private readonly IStudentCourseDbContext _studentCourseDbContext;
         private readonly ICoursesSubscriptionsDbContext _CourseSubscripDbContext;
+        private readonly ILogger<UnsubscribeFromCourseCommandHandler> _logger;
 
         public UnsubscribeFromCourseCommandHandler(ISubDbContext subscriptionRepository,
             IStudentSubscriptionDbContext studentSubscriptionDbContext,
             IStudentCourseDbContext studentCourseDbContext,
-            ICoursesSubscriptionsDbContext coursesSubscriptionsDbContext)
+            ICoursesSubscriptionsDbContext coursesSubscriptionsDbContext,
+            ILogger<UnsubscribeFromCourseCommandHandler> logger)
         {
             _subDbContext = subscriptionRepository;
             _studentsubDbContext = studentSubscriptionDbContext;
             _studentCourseDbContext = studentCourseDbContext;
             _CourseSubscripDbContext = coursesSubscriptionsDbContext;
+            _logger = logger;
 
         }
 
@@ -72,6 +77,7 @@ namespace Application.Subs.Commands.DeleteCommands
             }
             catch (Exception e)
             {
+                _logger.LogError($"{e}");
                 return new Response(400, $"Во время отписки от курса произошла ошибка: {e.Message}", false);
             }
         }

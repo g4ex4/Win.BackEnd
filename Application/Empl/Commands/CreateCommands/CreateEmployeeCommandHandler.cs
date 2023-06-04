@@ -15,7 +15,7 @@ using Employee = Domain.Entities.Employee;
 
 namespace Application.Empl.Commands.CreateCommands
 {
-    public class RegisterEmployeeHandler : IRequestHandler<RegisterEmployeeCommand, PersonResponse>
+    public class RegisterEmployeeHandler : IRequestHandler<RegisterEmployeeCommand, EmployeeResponse>
     {
         private readonly IEmployeeDbContext _dbContext;
         private readonly EmailService _emailService;
@@ -30,12 +30,12 @@ namespace Application.Empl.Commands.CreateCommands
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<PersonResponse> Handle(RegisterEmployeeCommand command, CancellationToken cancellationToken)
+        public async Task<EmployeeResponse> Handle(RegisterEmployeeCommand command, CancellationToken cancellationToken)
         {
             var isEmailExists = await _dbContext.Employees.AnyAsync(employee => employee.Email == command.Email, cancellationToken);
             if (isEmailExists)
             {
-                return new PersonResponse(400, "The mail already exists.", false, null);
+                return new EmployeeResponse(400, "The mail already exists.", false, null);
             }
 
             string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);
@@ -65,7 +65,7 @@ namespace Application.Empl.Commands.CreateCommands
 
             var token = GenerateJwtToken(claims);
 
-            return new PersonResponse(200, "Employee added successfully", true, emp)
+            return new EmployeeResponse(200, "Employee added successfully", true, emp)
             {
                 JwtToken = token
             };

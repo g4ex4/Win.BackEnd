@@ -13,6 +13,7 @@ namespace Application.Courses.Queries.GetCourseList
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public string Description { get; set; }
         public int MentorId { get; set; }
 
         public void Mapping(Profile profile)
