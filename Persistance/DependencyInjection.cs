@@ -39,9 +39,16 @@ namespace Persistance
                     services.AddScoped<IVideoDbContext>(opt
                        => opt.GetService<BaseDbContext>());
 
-                    using(var db = new SqlServerContext())
+                    using (var db = new SqlServerContext())
                     {
-                        var (admin,isCreate) = db.SeedUsers();
+                        var (role, isCreateRoles) = db.SeedRole();
+                        if (isCreateRoles == true)
+                        {
+                            db.Roles.AddRange(role);
+                            db.SaveChanges();
+                        }
+
+                        var (admin, isCreate) = db.SeedUsers();
                         if (isCreate == true)
                         {
                             db.Employees.Add(admin);
@@ -72,8 +79,16 @@ namespace Persistance
                     services.AddScoped<IVideoDbContext>(opt
                        => opt.GetService<BaseDbContext>());
 
+
                     using (var db = new PgContext())
                     {
+                        var (role, isCreateRoles) = db.SeedRole();
+                        if (isCreateRoles == true)
+                        {
+                            db.Roles.AddRange(role);
+                            db.SaveChanges();
+                        }
+
                         var (admin, isCreate) = db.SeedUsers();
                         if (isCreate == true)
                         {
