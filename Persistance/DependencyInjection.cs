@@ -101,6 +101,7 @@ namespace Persistance
                     services.AddScoped<IVideoDbContext>(opt
                        => opt.GetService<BaseDbContext>());
 
+
                     using (var db = new PgContext())
                     {
                         var (role, isCreateRoles) = db.SeedRole();
