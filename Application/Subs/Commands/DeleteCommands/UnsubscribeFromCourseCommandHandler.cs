@@ -73,12 +73,12 @@ namespace Application.Subs.Commands.DeleteCommands
                 //_CourseSubscripDbContext.CoursesSubscriptions.Remove(coursSubs);
                 //await _CourseSubscripDbContext.SaveChangesAsync(cancellationToken);
 
-                return new Response(200, "Студент успешно отписан от курса", true);
+                return new Response(200, "Student successfully unsubscribed from the course", true);
             }
             catch (Exception e)
             {
                 _logger.LogError($"{e}");
-                return new Response(400, $"Во время отписки от курса произошла ошибка: {e.Message}", false);
+                return new Response(400, $"An error occurred while unsubscribing from a course: {e.Message}", false);
             }
         }
     }
