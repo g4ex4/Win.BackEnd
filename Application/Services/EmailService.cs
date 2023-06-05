@@ -10,6 +10,14 @@ namespace Application.Services
 {
     public class EmailService
     {
+
+        public bool IsAllowedEmail(string email)
+        {
+            var allowedDomains = new List<string> { "gmail.com", "outlook.com",
+                "mail.com", "mail.ru", "yahoo.com", "aol.com" };
+            var domain = email.Split('@')[1];
+            return allowedDomains.Contains(domain.ToLower());
+        }
         public async Task SendEmailAsync(string emailRequest)
         {
             var emailMessage = new MailMessage();

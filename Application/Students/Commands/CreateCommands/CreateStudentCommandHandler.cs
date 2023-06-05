@@ -38,6 +38,12 @@ namespace Application.Empl.Commands.CreateCommands
                 return new PersonResponse(400, "The mail already exists.", false, null);
             }
 
+            var isGoogleEmail = _emailService.IsAllowedEmail(command.Email);
+            if (!isGoogleEmail)
+            {
+                return new PersonResponse(400, "Only Google email addresses are allowed.", false, null);
+            }
+
             string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);
             Student student = new Student
             {

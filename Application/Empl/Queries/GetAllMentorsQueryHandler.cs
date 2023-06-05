@@ -30,6 +30,7 @@ namespace Application.Empl.Queries
                     Id = e.Id,
                     UserName = e.UserName,
                     Email = e.Email,
+                    EmailConfirmed = e.EmailConfirmed,
                     DateTimeAdded = e.DateTimeAdded,
                     DateTimeUpdated = e.DateTimeUpdated,
                     JobTitle = e.JobTitle,

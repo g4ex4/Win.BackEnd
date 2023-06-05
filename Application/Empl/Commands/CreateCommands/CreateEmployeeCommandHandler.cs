@@ -29,13 +29,19 @@ namespace Application.Empl.Commands.CreateCommands
             _jwtSettings = jwtSettings.Value;
             _passwordHasher = passwordHasher;
         }
-
+        
         public async Task<EmployeeResponse> Handle(RegisterEmployeeCommand command, CancellationToken cancellationToken)
         {
             var isEmailExists = await _dbContext.Employees.AnyAsync(employee => employee.Email == command.Email, cancellationToken);
             if (isEmailExists)
             {
                 return new EmployeeResponse(400, "The mail already exists.", false, null);
+            }
+
+            var isGoogleEmail = _emailService.IsAllowedEmail(command.Email);
+            if (!isGoogleEmail)
+            {
+                return new EmployeeResponse(400, "Only Google email addresses are allowed.", false, null);
             }
 
             string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);

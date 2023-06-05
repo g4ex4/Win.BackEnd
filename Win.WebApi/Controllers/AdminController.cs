@@ -3,11 +3,13 @@ using Application.Empl.Commands.DeleteCommands;
 using Application.Empl.Commands.UpdateCommands;
 using Application.Empl.Queries;
 using Application.Students.Queries;
+using Domain.Entities;
 using Domain.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Win.WebApi.Controllers
@@ -103,7 +105,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpDelete("Delete-Mentor")]
-        public async Task<PersonResponse> DeleteEmployee(DeleteEmplCommand request)
+        public async Task<Response> DeleteEmployee(DeleteEmplCommand request)
         {
             var response = await _mediator.Send(request);
 
