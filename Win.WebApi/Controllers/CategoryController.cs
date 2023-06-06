@@ -45,7 +45,7 @@ namespace Win.WebApi.Controllers
 
         [HttpGet("getCoursesByCategory/{categoryId}")]
         [Authorize]
-        public async Task<ActionResult<CourseListVm>> GetCoursesByCategory(
+        public async Task<ActionResult<CategoryListVm>> GetCoursesByCategory(
             [Range(1, int.MaxValue, ErrorMessage = "Invalid category ID.")]
               int categoryId)
         {

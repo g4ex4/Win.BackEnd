@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace Application.Categories.Commands.Queries
 {
-    public class GetCourseCategoryQueryHandler : IRequestHandler<GetCourseCategoryQuery, CourseListVm>
+    public class GetCourseCategoryQueryHandler : IRequestHandler<GetCourseCategoryQuery, CategoryListVm>
     {
         private readonly IMapper _mapper;
-        private readonly ICourseDbContext _dbContext;
+        private readonly ICategoryDbContext _dbContext;
         private readonly ILogger<GetCourseCategoryQueryHandler> _logger;
 
-        public GetCourseCategoryQueryHandler(IMapper mapper, ICourseDbContext dbContext,
+        public GetCourseCategoryQueryHandler(IMapper mapper, ICategoryDbContext dbContext,
             ILogger<GetCourseCategoryQueryHandler> logger)
         {
             _mapper = mapper;
@@ -27,15 +27,15 @@ namespace Application.Categories.Commands.Queries
             _logger = logger;
         }
 
-        public async Task<CourseListVm> Handle(GetCourseCategoryQuery request, CancellationToken cancellationToken)
+        public async Task<CategoryListVm> Handle(GetCourseCategoryQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var coursesQuery = await _dbContext.Courses.Where(course => course.CategoryId == request.CategoryId)
-                    .ProjectTo<CourseLookupDto>(_mapper.ConfigurationProvider)
+                var categoryQuery = await _dbContext.Categories.Where(category => category.Id == request.CategoryId)
+                    .ProjectTo<CategoryLookupDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken);
 
-                return new CourseListVm { Courses = coursesQuery };
+                return new CategoryListVm { Categories = categoryQuery };
             }
             catch (Exception ex)
             {

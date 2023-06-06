@@ -24,7 +24,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("Create")]
-        //[Authorize(Roles = "2")]
+        [Authorize(Roles = "2")]
         public async Task<CourseResponse> Create(int categoryId, string title, string description, int mentorId, IFormFile formFile)
         {
             var command = new CreateCourseCommand
@@ -89,7 +89,6 @@ namespace Win.WebApi.Controllers
 
         [HttpGet("{id}/getCourseDetails")]
         [Authorize(Roles = "1,2")]
-
         public async Task<ActionResult<CourseDetailsVm>> GetCourseDetails(
             [Range(1, int.MaxValue, ErrorMessage = "Invalid course ID.")]int id, 
             [Range(1, int.MaxValue, ErrorMessage = "Invalid MentorId.")] int mentorId)
@@ -101,7 +100,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpGet("getAllCourses")]
-        //[Authorize]
+        [Authorize]
         public async Task<ActionResult<CourseListVm>> GetAllCourses()
         {
             var query = new GetAllCoursesQuery();
@@ -122,8 +121,6 @@ namespace Win.WebApi.Controllers
             var response = new Response(200, "Student courses retrieved successfully", true);
             return Ok(new { Response = response, Courses = courseList.Courses });
         }
-
-
 
     }
 }

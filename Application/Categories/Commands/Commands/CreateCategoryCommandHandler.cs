@@ -25,7 +25,7 @@ namespace Application.Categories.Commands.Commands
             _dbContext.Categories.Add(category);
             await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return new CategoryResponse(200, "Course added successfully", true, category);
+            return new CategoryResponse(200, "Category added successfully", true, category);
         }
     }
 }

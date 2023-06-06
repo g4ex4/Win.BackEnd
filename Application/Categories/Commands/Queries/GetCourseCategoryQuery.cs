@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Categories.Commands.Queries
 {
-    public class GetCourseCategoryQuery : IRequest<CourseListVm>
+    public class GetCourseCategoryQuery : IRequest<CategoryListVm>
     {
         public int CategoryId { get; set; }
 
