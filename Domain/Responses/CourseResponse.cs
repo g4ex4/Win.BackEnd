@@ -5,7 +5,8 @@ namespace Domain.Responses
     public class CourseResponse : EntityResponse<int>
     {
 
-        public CourseResponse(Course course, int statusCode, string message, bool isSuccess) : base(course, statusCode, message, isSuccess)
+        public CourseResponse(Course course, int statusCode, string message, bool isSuccess) 
+            : base(course, statusCode, message, isSuccess)
         {
             Id = course?.Id ?? 0;
             MentorId = course?.MentorId ?? 0;

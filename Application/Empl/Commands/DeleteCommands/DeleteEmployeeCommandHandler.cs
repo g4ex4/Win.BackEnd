@@ -20,11 +20,11 @@ namespace Application.Empl.Commands.DeleteCommands
             var entity = await _dbContext.Employees.FirstOrDefaultAsync(x => x.Id == request.EmployeeId);
             if (entity == null)
             {
-                return new Response(400, "Employee not found", false, null);
+                return new Response(400, "Employee not found", false);
             }
             if (entity.Email == "1goldyshsergei1@gmail.com")
             {
-                return new Response(400, "This user cannot be deleted", false, null);
+                return new Response(400, "This user cannot be deleted", false);
             }
 
             _dbContext.Employees.Remove(entity);

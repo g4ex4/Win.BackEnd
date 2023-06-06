@@ -114,12 +114,10 @@ namespace Persistance
                 return (null, false);
             Category сategory = new Category()
             {
-
                 Name = "Frontend development"
             };
             Category сategory1 = new Category()
             {
-
                 Name = "Backend development"
             };
             List<Category> сategories = new List<Category>();

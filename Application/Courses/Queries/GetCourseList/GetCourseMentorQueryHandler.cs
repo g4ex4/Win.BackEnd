@@ -7,12 +7,12 @@ using Application.Common.Exceptions;
 
 namespace Application.Courses.Queries.GetCourseList
 {
-    public class GetCourseListQueryHandler : IRequestHandler<GetCourseMentorQuery, CourseListVm>
+    public class GetCourseMentorQueryHandler : IRequestHandler<GetCourseMentorQuery, CourseListVm>
     {
         private readonly IMapper _mapper;
         private readonly ICourseDbContext _dbContext;
 
-        public GetCourseListQueryHandler(IMapper mapper, ICourseDbContext dbContext)
+        public GetCourseMentorQueryHandler(IMapper mapper, ICourseDbContext dbContext)
         {
             _mapper = mapper;
             _dbContext = dbContext;

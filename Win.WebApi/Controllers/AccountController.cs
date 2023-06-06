@@ -28,7 +28,7 @@ namespace Win.WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new EmployeeResponse(400, "Invalid input data", false, null);
+                return new EmployeeResponse(400, "Invalid input data", false, null, null);
             }
             var response = await _mediator.Send(request);
             
@@ -53,7 +53,7 @@ namespace Win.WebApi.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return new EmployeeResponse(400, "Invalid input data", false, null);
+                return new EmployeeResponse(400, "Invalid input data", false, null, null);
             }
 
             var response = await _mediator.Send(request);

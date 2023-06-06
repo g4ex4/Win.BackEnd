@@ -19,8 +19,6 @@ namespace Domain.Responses
         public string VideoName { get; set; }
         public string Url { get; set; }
         public int Id { get; set; }
-        
-
 
     }
 }

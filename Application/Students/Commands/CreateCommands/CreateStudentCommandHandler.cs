@@ -14,7 +14,7 @@ using System.Text;
 
 namespace Application.Empl.Commands.CreateCommands
 {
-    public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand, PersonResponse>
+    public class CreateStudentCommandHandler : IRequestHandler<CreateStudentCommand, StudentResponse>
     {
         private readonly IStudentDbContext _dbContext;
         private readonly EmailService _emailService;
@@ -30,19 +30,19 @@ namespace Application.Empl.Commands.CreateCommands
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<PersonResponse> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
+        public async Task<StudentResponse> Handle(CreateStudentCommand command, CancellationToken cancellationToken)
         {
             var isEmailExists = await _dbContext.Students.AnyAsync(student => student.Email == command.Email, cancellationToken);
             if (isEmailExists)
             {
-                return new PersonResponse(400, "The mail already exists.", false, null);
+                return new StudentResponse(400, "The mail already exists.", false, null, null);
             }
 
             var isGoogleEmail = _emailService.IsAllowedEmail(command.Email);
             if (!isGoogleEmail)
             {
-                return new PersonResponse(400, "your email must end with: " +
-                    "gmail.com, outlook.com, mail.com, mail.ru, yahoo.com, aol.com", false, null);
+                return new StudentResponse(400, "your email must end with: " +
+                    "gmail.com, outlook.com, mail.com, mail.ru, yahoo.com, aol.com", false, null, null);
             }
 
             string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);
@@ -66,10 +66,10 @@ namespace Application.Empl.Commands.CreateCommands
 
             var token = GenerateJwtToken(claims);
 
-            return new PersonResponse(200, "Student added successfully", true, student)
-            {
-                JwtToken = token
-            };
+            return new StudentResponse(200, "Student added successfully", true, token, student);
+            //{
+            //    JwtToken = token
+            //};
         }
 
         private string GenerateJwtToken(IEnumerable<Claim> claims)

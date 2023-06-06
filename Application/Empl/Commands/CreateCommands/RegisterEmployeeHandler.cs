@@ -35,14 +35,14 @@ namespace Application.Empl.Commands.CreateCommands
             var isEmailExists = await _dbContext.Employees.AnyAsync(employee => employee.Email == command.Email, cancellationToken);
             if (isEmailExists)
             {
-                return new EmployeeResponse(400, "The mail already exists.", false, null);
+                return new EmployeeResponse(400, "The mail already exists.", false, null, null);
             }
 
             var isGoogleEmail = _emailService.IsAllowedEmail(command.Email);
             if (!isGoogleEmail)
             {
                 return new EmployeeResponse(400, "your email must end with: gmail.com,outlook.com," +
-                    " mail.com, mail.ru, yahoo.com, aol.com", false, null);
+                    " mail.com, mail.ru, yahoo.com, aol.com", false, null, null);
             }
 
             string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);
@@ -72,10 +72,10 @@ namespace Application.Empl.Commands.CreateCommands
 
             var token = GenerateJwtToken(claims);
 
-            return new EmployeeResponse(200, "Employee added successfully", true, emp)
-            {
-                JwtToken = token
-            };
+            return new EmployeeResponse(200, "Employee added successfully", true, token, emp);
+            //{
+            //    JwtToken = token
+            //};
         }
 
         private string GenerateJwtToken(IEnumerable<Claim> claims)

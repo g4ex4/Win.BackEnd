@@ -54,6 +54,7 @@ namespace Application.Courses.Commands.CreateCommands
                 Title = command.Title,
                 Description = command.Description,
                 MentorId = command.MentorId,
+                CategoryId= command.CategoryId,
                 DateTimeAdded = DateTime.UtcNow,
                 DateTimeUpdated = DateTime.UtcNow,
                 ImageCourseName = uniqueFileName,

@@ -33,7 +33,7 @@ namespace Application.Empl.Commands.CreateCommands
             if (employee == null || _passwordHasher
                 .VerifyHashedPassword(null, employee.PasswordHash, command.PasswordHash) != PasswordVerificationResult.Success)
             {
-                return new EmployeeResponse(401, "Wrong login or password", false, null);
+                return new EmployeeResponse(401, "Wrong login or password", false, null, null);
             }
 
             var claims = new List<Claim>
@@ -43,10 +43,10 @@ namespace Application.Empl.Commands.CreateCommands
     };
 
             var token = GenerateJwtToken(claims);
-            return new EmployeeResponse(200, "Authorized", true, employee)
-            {
-                JwtToken = token
-            };
+            return new EmployeeResponse(200, "Authorized", true, token, employee);
+            //{
+            //    JwtToken = token
+            //};
         }
 
         private string GenerateJwtToken(IEnumerable<Claim> claims)

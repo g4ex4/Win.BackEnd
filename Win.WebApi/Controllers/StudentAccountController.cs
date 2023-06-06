@@ -24,32 +24,32 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<PersonResponse> Register(CreateStudentCommand request)
+        public async Task<StudentResponse> Register(CreateStudentCommand request)
         {
             if (!ModelState.IsValid)
             {
-                return new PersonResponse(400, "Invalid input data", false, null);
+                return new StudentResponse(400, "Invalid input data", false, null, null);
             }
             var response = await _mediator.Send(request);
 
-            return (PersonResponse)response;
+            return (StudentResponse)response;
         }
 
         [HttpPost("authorize")]
-        public async Task<PersonResponse> Authorize(AuthorizeStudentCommand request)
+        public async Task<StudentResponse> Authorize(AuthorizeStudentCommand request)
         {
             if (string.IsNullOrEmpty(request.Email))
             {
-                return new PersonResponse(400, "Email is required.", false, null);
+                return new StudentResponse(400, "Email is required.", false, null, null);
             }
 
             if (string.IsNullOrEmpty(request.PasswordHash))
             {
-                return new PersonResponse(400, "Password is required.", false, null);
+                return new StudentResponse(400, "Password is required.", false, null, null);
             }
 
             var response = await _mediator.Send(request);
-            return (PersonResponse)response;
+            return (StudentResponse)response;
         }
 
         [HttpPut("changePassword")]

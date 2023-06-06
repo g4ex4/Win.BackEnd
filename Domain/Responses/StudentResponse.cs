@@ -7,19 +7,15 @@ using System.Threading.Tasks;
 
 namespace Domain.Responses
 {
-    public class EmployeeResponse : JwtResponse
+    public class StudentResponse : JwtResponse
     {
-        public EmployeeResponse(int statusCode, string message, bool isSuccess, string jwtToken, Employee employee)
+        public StudentResponse(int statusCode, string message, bool isSuccess, string jwtToken, Student student)
         : base(statusCode, message, isSuccess, jwtToken)
         {
-            Id = employee?.Id ?? 0;
-            RoleId = employee?.RoleId ?? 0;
-            UserName = employee?.UserName ?? "";
+            Id = student?.Id ?? 0;
+            UserName = student?.UserName ?? "";
         }
         public string UserName { get; set; }
         public int Id { get; set; }
-        public int RoleId { get; set; }
-
-
     }
 }

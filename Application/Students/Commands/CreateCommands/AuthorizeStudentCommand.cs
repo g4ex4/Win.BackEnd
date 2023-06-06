@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Application.Students.Commands.CreateCommands
 {
-    public class AuthorizeStudentCommand : IRequest<PersonResponse>
+    public class AuthorizeStudentCommand : IRequest<StudentResponse>
     {
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email format.")]

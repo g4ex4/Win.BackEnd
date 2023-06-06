@@ -13,7 +13,7 @@ using System.Text;
 
 namespace Application.Students.Commands.CreateCommands
 {
-    public class AuthorizeStudentHandler : IRequestHandler<AuthorizeStudentCommand, PersonResponse>
+    public class AuthorizeStudentHandler : IRequestHandler<AuthorizeStudentCommand, StudentResponse>
     {
         private readonly IStudentDbContext _dbContext;
         private readonly JwtSettings _jwtSettings;
@@ -26,12 +26,12 @@ namespace Application.Students.Commands.CreateCommands
             _passwordHasher = passwordHasher;
         }
 
-        public async Task<PersonResponse> Handle(AuthorizeStudentCommand command, CancellationToken cancellationToken)
+        public async Task<StudentResponse> Handle(AuthorizeStudentCommand command, CancellationToken cancellationToken)
         {
             var student = await _dbContext.Students.FirstOrDefaultAsync(e => e.Email == command.Email);
             if (student == null || _passwordHasher.VerifyHashedPassword(null, student.PasswordHash, command.PasswordHash) != PasswordVerificationResult.Success)
             {
-                return new PersonResponse(401, "Unauthorized", false, null);
+                return new StudentResponse(401, "Unauthorized", false, null, null);
             }
 
             var claims = new List<Claim>
@@ -40,10 +40,10 @@ namespace Application.Students.Commands.CreateCommands
         };
 
             var token = GenerateJwtToken(claims);
-            return new PersonResponse(200, "Authorized", true, student)
-            {
-                JwtToken = token
-            };
+            return new StudentResponse(200, "Authorized", true, token, student);
+            //{
+            //    JwtToken = token
+            //};
         }
 
         private string GenerateJwtToken(IEnumerable<Claim> claims)

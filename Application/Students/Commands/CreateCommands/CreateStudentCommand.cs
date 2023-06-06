@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace Application.Empl.Commands.CreateCommands
 {
-    public class CreateStudentCommand : IRequest<PersonResponse>
+    public class CreateStudentCommand : IRequest<StudentResponse>
     {
         [Required]
         public string UserName { get; set; }
