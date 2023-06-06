@@ -1,4 +1,4 @@
-﻿using Application.Categories.Commands.CreateCommands;
+﻿using Application.Categories.Commands.Queries;
 using Domain.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,12 +16,14 @@ namespace Win.WebApi.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("addCategory")]
-        public async Task<Response> AddCategory([FromBody] CreateCategoryCommand command, [FromServices] IMediator mediator)
+        [HttpGet("categories")]
+        public async Task<ActionResult<CategoryListVm>> GetAllCategories()
         {
-            var response = await _mediator.Send(command);
-
-            return response;
+            var query = new GetAllCategoryQuery();
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
+
+
     }
 }

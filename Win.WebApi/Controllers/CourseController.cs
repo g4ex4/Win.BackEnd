@@ -24,11 +24,12 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("Create")]
-        [Authorize(Roles = "2")]
-        public async Task<CourseResponse> Create(string title, string description, int mentorId, IFormFile formFile)
+        //[Authorize(Roles = "2")]
+        public async Task<CourseResponse> Create(int categoryId, string title, string description, int mentorId, IFormFile formFile)
         {
             var command = new CreateCourseCommand
             {
+                CategoryId = categoryId,
                 Title = title,
                 Description = description,
                 MentorId = mentorId,
@@ -100,7 +101,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpGet("getAllCourses")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<CourseListVm>> GetAllCourses()
         {
             var query = new GetAllCoursesQuery();

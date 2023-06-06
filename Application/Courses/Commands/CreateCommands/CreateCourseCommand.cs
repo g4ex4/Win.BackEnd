@@ -6,6 +6,7 @@ namespace Application.Courses.Commands.CreateCommands
 {
     public class CreateCourseCommand : IRequest<CourseResponse>
     {
+        public int CategoryId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public int MentorId { get; set; }

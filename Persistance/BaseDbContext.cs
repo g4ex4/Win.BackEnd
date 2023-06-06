@@ -108,6 +108,28 @@ namespace Persistance
 
         }
 
+        public (List<Category>?, bool) SeedCategory()
+        {
+            if (Categories.Any())
+                return (null, false);
+            Category сategory = new Category()
+            {
+
+                Name = "Frontend development"
+            };
+            Category сategory1 = new Category()
+            {
+
+                Name = "Backend development"
+            };
+            List<Category> сategories = new List<Category>();
+            сategories.Add(сategory);
+            сategories.Add(сategory1);
+
+            return (сategories, true);
+
+        }
+
 
     }
 }

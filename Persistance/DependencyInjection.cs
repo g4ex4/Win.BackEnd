@@ -63,6 +63,13 @@ namespace Persistance
 
                     using (var db = new SqlServerContext())
                     {
+                        var (сategory, isCreateСategory) = db.SeedCategory();
+                        if (isCreateСategory == true)
+                        {
+                            db.Categories.AddRange(сategory);
+                            db.SaveChanges();
+                        }
+
                         var (role, isCreateRoles) = db.SeedRole();
                         if (isCreateRoles == true)
                         {
@@ -102,8 +109,15 @@ namespace Persistance
                        => opt.GetService<BaseDbContext>());
 
 
-                    using (var db = new PgContext())
+                    using (var db = new SqlServerContext())
                     {
+                        var (сategory, isCreateСategory) = db.SeedCategory();
+                        if (isCreateСategory == true)
+                        {
+                            db.Categories.AddRange(сategory);
+                            db.SaveChanges();
+                        }
+
                         var (role, isCreateRoles) = db.SeedRole();
                         if (isCreateRoles == true)
                         {

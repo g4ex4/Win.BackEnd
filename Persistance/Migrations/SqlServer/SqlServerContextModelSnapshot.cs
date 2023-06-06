@@ -30,12 +30,6 @@ namespace Persistance.Migrations.SqlServer
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("DateTimeAdded")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateTimeUpdated")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -52,6 +46,9 @@ namespace Persistance.Migrations.SqlServer
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("DateTimeAdded")
                         .HasColumnType("datetime2");
@@ -79,6 +76,8 @@ namespace Persistance.Migrations.SqlServer
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.HasIndex("MentorId");
 
@@ -370,11 +369,19 @@ namespace Persistance.Migrations.SqlServer
 
             modelBuilder.Entity("Domain.Entities.Course", b =>
                 {
+                    b.HasOne("Domain.Entities.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Employee", "Mentor")
                         .WithMany("Courses")
                         .HasForeignKey("MentorId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Category");
 
                     b.Navigation("Mentor");
                 });
@@ -423,7 +430,7 @@ namespace Persistance.Migrations.SqlServer
             modelBuilder.Entity("Domain.Links.CategoryCourse", b =>
                 {
                     b.HasOne("Domain.Entities.Category", "Category")
-                        .WithMany("CategoryCourse")
+                        .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -494,11 +501,6 @@ namespace Persistance.Migrations.SqlServer
                     b.Navigation("Student");
 
                     b.Navigation("Subscription");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Category", b =>
-                {
-                    b.Navigation("CategoryCourse");
                 });
 
             modelBuilder.Entity("Domain.Entities.Course", b =>

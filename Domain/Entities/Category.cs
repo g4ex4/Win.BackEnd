@@ -1,11 +1,15 @@
 ﻿using Domain.Common;
 using Domain.Links;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    public class Category : BaseEntity<int>
+    public class Category
     {
+        [Key]
+        public int Id { get; set; }
         public string Name { get; set; }
-        public List<CategoryCourse> CategoryCourse { get; set; }
+        
+
     }
 }

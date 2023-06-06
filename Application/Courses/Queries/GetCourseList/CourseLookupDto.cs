@@ -13,6 +13,7 @@ namespace Application.Courses.Queries.GetCourseList
     public class CourseLookupDto : IMapWith<Course>
     {
         public int Id { get; set; }
+        public int CategoryId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public int MentorId { get; set; }
@@ -24,9 +25,6 @@ namespace Application.Courses.Queries.GetCourseList
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Course, CourseLookupDto>();
-                //.ForMember(cfg => cfg.ImageInBase64, 
-                //opt => opt.MapFrom(n => Convert.ToBase64String(n.ImageCourseUrl)));
-                
         }
     }
 }

@@ -46,6 +46,8 @@ namespace Application.Videos.Commands.CreateCommands
                 {
                     VideoName = command.VideoFile.FileName,
                     Url = videoFolderPath + "\\" + command.VideoFile.FileName,
+                    DateTimeAdded = DateTime.UtcNow,
+                    DateTimeUpdated = DateTime.UtcNow,
 
                     CourseId = command.CourseId
                 };

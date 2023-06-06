@@ -8,14 +8,16 @@ namespace Domain.Responses
         public CourseResponse(Course course, int statusCode, string message, bool isSuccess) : base(course, statusCode, message, isSuccess)
         {
             Id = course?.Id ?? 0;
+            MentorId = course?.MentorId ?? 0;
+            CategoryId = course?.CategoryId ?? 0;
             ImageCourseName = course?.ImageCourseName ?? "";
             ImageCourseUrl = course?.ImageCourseUrl ?? "";
             Title = course?.Title ?? "";
             Description = course?.Description ?? "";
-            MentorId = course?.MentorId ?? 0;
 
         }
         public int Id { get; set; }
+        public int CategoryId { get; set; }
         public string ImageCourseName { get; set; }
         public string ImageCourseUrl { get; set; }
         public string Title { get; set; }

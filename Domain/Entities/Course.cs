@@ -9,6 +9,8 @@ namespace Domain.Entities
         public string Description { get; set; }
         public string ImageCourseName { get; set; }
         public string ImageCourseUrl { get; set; }
+        public int CategoryId { get; set; }
+        public virtual Category Category { get; set; }
         public int MentorId { get; set; }
         public Employee Mentor { get; set; }
         public List<Video> Videous { get; set; }
