@@ -2,10 +2,13 @@
 using Application.Courses.Commands.UpdateCommands;
 using Application.Courses.Queries.GetCourseDetails;
 using Application.Courses.Queries.GetCourseList;
+using Application.Videos.Commands.CreateCommands;
+using Domain.Entities;
 using Domain.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Win.WebApi.Controllers
 {
@@ -22,43 +25,73 @@ namespace Win.WebApi.Controllers
 
         [HttpPost("Create")]
         [Authorize(Roles = "2")]
-        public async Task<Response> Create(CreateCourseCommand request)
+        public async Task<CourseResponse> Create(string title, string description, int mentorId, IFormFile formFile)
         {
-            if (!ModelState.IsValid)
+            var command = new CreateCourseCommand
             {
-                return new Response(400, "Invalid input data", false);
+                Title = title,
+                Description = description,
+                MentorId = mentorId,
+                ImageFile = formFile
+            };
+
+            var validator = new CreateCourseCommandValidator();
+            var validationResult = await validator.ValidateAsync(command);
+
+            if (!validationResult.IsValid)
+            {
+                return new CourseResponse(null, 400, "Invalid input data", false);
             }
-            var response = await _mediator.Send(request);
+
+            var response = await _mediator.Send(command);
 
             return response;
         }
 
-        [HttpPut("updateCourse")]
+        [HttpPut("Update")]
         [Authorize(Roles = "2")]
-        public async Task<ActionResult<Response>> UpdateCourse([FromBody] UpdateCourseCommand command)
+        public async Task<CourseResponse> Update(int courseId, string title, string description, int mentorId, IFormFile formFile)
         {
-            var response = await _mediator.Send(command);
-
-            if (!response.IsSuccess)
+            var command = new UpdateCourseCommand
             {
-                return StatusCode(response.StatusCode, new { Message = response.Message });
+                CourseId = courseId,
+                Title = title,
+                Description = description,
+                MentorId = mentorId,
+                ImageFile = formFile
+            };
+
+            var validator = new UpdateCourseCommandValidator();
+            var validationResult = await validator.ValidateAsync(command);
+
+            if (!validationResult.IsValid)
+            {
+                return new CourseResponse(null, 400, "Invalid input data", false);
             }
 
-            return Ok(response);
+            var response = await _mediator.Send(command);
+
+            return response;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<CourseListVm>> GetCourses(int mentorId)
+        [HttpGet("getCourses/{mentorId}")]
+        [Authorize(Roles = "1,2")]
+        public async Task<ActionResult<CourseListVm>> GetCourses(
+            [Range(1, int.MaxValue, ErrorMessage = "Invalid mentor ID.")]
+                      int mentorId)
         {
-            var query = new GetCourseListQuery { MentorId = mentorId };
+            var query = new GetCourseMentorQuery { MentorId = mentorId };
             var result = await _mediator.Send(query);
 
             return Ok(result);
         }
 
-        [HttpGet("{id}getCourseDetails")]
-        [Authorize(Roles = "2")]
-        public async Task<ActionResult<CourseDetailsVm>> GetCourseDetails(int id, int mentorId)
+        [HttpGet("{id}/getCourseDetails")]
+        [Authorize(Roles = "1,2")]
+
+        public async Task<ActionResult<CourseDetailsVm>> GetCourseDetails(
+            [Range(1, int.MaxValue, ErrorMessage = "Invalid course ID.")]int id, 
+            [Range(1, int.MaxValue, ErrorMessage = "Invalid MentorId.")] int mentorId)
         {
             var query = new GetCourseDetailsQuery { Id = id, MentorId = mentorId };
             var result = await _mediator.Send(query);
@@ -67,6 +100,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpGet("getAllCourses")]
+        [Authorize]
         public async Task<ActionResult<CourseListVm>> GetAllCourses()
         {
             var query = new GetAllCoursesQuery();
@@ -77,7 +111,9 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpGet("getStudentCourses/{studentId}")]
-        public async Task<ActionResult<StudentCourseListVm>> GetStudentCourses(int studentId)
+        [Authorize]
+        public async Task<ActionResult<StudentCourseListVm>> GetStudentCourses(
+            [Range(1, int.MaxValue, ErrorMessage = "Invalid course ID.")] int studentId)
         {
             var query = new GetStudentCoursesQuery { StudentId = studentId };
             var courseList = await _mediator.Send(query);

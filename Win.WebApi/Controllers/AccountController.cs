@@ -51,8 +51,13 @@ namespace Win.WebApi.Controllers
         [HttpPost("authorize")]
         public async Task<EmployeeResponse> Authorize(AuthorizeEmployeeCommand request)
         {
+            if (!ModelState.IsValid)
+            {
+                return new EmployeeResponse(400, "Invalid input data", false, null);
+            }
+
             var response = await _mediator.Send(request);
-            
+
             return (EmployeeResponse)response;
         }
 
@@ -72,12 +77,17 @@ namespace Win.WebApi.Controllers
             }
         }
 
+        
         [HttpPut("Update")]
-        [Authorize(Roles = "2")]
-        public async Task<Response> Update(UpdateEmoloyeeCommand request)
+        [Authorize(Roles = "1,2")]
+        public async Task<Response> Update(UpdateEmployeeCommand request)
         {
-            var response = await _mediator.Send(request);
+            if (!ModelState.IsValid)
+            {
+                return new Response(400, "Invalid input data", false);
+            }
 
+            var response = await _mediator.Send(request);
             return response;
         }
 
@@ -88,13 +98,10 @@ namespace Win.WebApi.Controllers
             {
                 return new PersonResponse(400, "Invalid input data", false, null);
             }
-            var response = await _mediator.Send(request);
 
+            var response = await _mediator.Send(request);
             return response;
         }
-
-
-
 
     }
 }

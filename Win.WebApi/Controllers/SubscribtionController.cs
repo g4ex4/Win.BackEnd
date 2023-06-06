@@ -6,6 +6,7 @@ using Domain.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Win.WebApi.Controllers
 {
@@ -43,11 +44,17 @@ namespace Win.WebApi.Controllers
         [Authorize]
         public async Task<ActionResult<Response>> UnsubscribeFromCourse([FromBody] UnsubscribeFromCourseCommand command)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new Response(400, "Invalid input data", false));
+            }
+
             var response = await _mediator.Send(command);
             return response;
         }
 
         [HttpGet("getAllSubscription")]
+        [Authorize]
         public async Task<ActionResult<SubscriptionListVm>> GetAllSubscription()
         {
             var query = new GetAllSubscriptionQuery();
@@ -58,7 +65,9 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpGet("getSubscriptionList/{studentId}")]
-        public async Task<ActionResult<SubscriptionListVm>> GetSubscriptionList(int studentId)
+        [Authorize]
+        public async Task<ActionResult<SubscriptionListVm>> GetSubscriptionList(
+            [Range(1, int.MaxValue, ErrorMessage = "Invalid course ID.")] int studentId)
         {
             var query = new GetSubscriptionListQuery { StudentId = studentId };
             var subscriptionList = await _mediator.Send(query);

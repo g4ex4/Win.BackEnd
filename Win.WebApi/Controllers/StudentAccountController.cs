@@ -38,6 +38,16 @@ namespace Win.WebApi.Controllers
         [HttpPost("authorize")]
         public async Task<PersonResponse> Authorize(AuthorizeStudentCommand request)
         {
+            if (string.IsNullOrEmpty(request.Email))
+            {
+                return new PersonResponse(400, "Email is required.", false, null);
+            }
+
+            if (string.IsNullOrEmpty(request.PasswordHash))
+            {
+                return new PersonResponse(400, "Password is required.", false, null);
+            }
+
             var response = await _mediator.Send(request);
             return (PersonResponse)response;
         }

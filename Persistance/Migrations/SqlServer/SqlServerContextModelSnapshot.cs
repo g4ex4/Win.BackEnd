@@ -63,6 +63,14 @@ namespace Persistance.Migrations.SqlServer
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ImageCourseName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageCourseUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("MentorId")
                         .HasColumnType("int");
 
@@ -285,11 +293,8 @@ namespace Persistance.Migrations.SqlServer
                     b.Property<DateTime>("DateTimeUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("Media")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<string>("Url")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("VideoName")

@@ -6,16 +6,16 @@ using Application.Common.Exceptions;
 
 namespace Application.Empl.Commands.UpdateCommands
 {
-    public class UpdateCourseCommandHandler : IRequestHandler<UpdateEmoloyeeCommand, Response>
+    public class UpdateEmployeeCommandHandler : IRequestHandler<UpdateEmployeeCommand, Response>
     {
         private readonly IEmployeeDbContext _dbContext;
 
-        public UpdateCourseCommandHandler(IEmployeeDbContext dbContext)
+        public UpdateEmployeeCommandHandler(IEmployeeDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
-        public async Task<Response> Handle(UpdateEmoloyeeCommand command, CancellationToken cancellationToken)
+        public async Task<Response> Handle(UpdateEmployeeCommand command, CancellationToken cancellationToken)
         {
             var entity = await _dbContext.Employees.FirstOrDefaultAsync(c => c.Id == command.Id, cancellationToken);
             if (entity == null)

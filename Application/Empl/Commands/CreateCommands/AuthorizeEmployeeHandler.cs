@@ -33,7 +33,7 @@ namespace Application.Empl.Commands.CreateCommands
             if (employee == null || _passwordHasher
                 .VerifyHashedPassword(null, employee.PasswordHash, command.PasswordHash) != PasswordVerificationResult.Success)
             {
-                return new EmployeeResponse(401, "Unauthorized", false, null);
+                return new EmployeeResponse(401, "Wrong login or password", false, null);
             }
 
             var claims = new List<Claim>

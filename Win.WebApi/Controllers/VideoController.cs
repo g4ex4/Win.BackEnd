@@ -4,6 +4,7 @@ using Domain.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Win.WebApi.Controllers
 {
@@ -20,22 +21,31 @@ namespace Win.WebApi.Controllers
 
         [HttpPost]
         [Authorize(Roles = "2")]
-        public async Task<Response> AddVideo(int courseId, IFormFile videoFile)
+        public async Task<VideoResponse> AddVideo(int courseId, IFormFile videoFile)
         {
             var command = new AddVideoCommand
             {
                 CourseId = courseId,
-                VideoFile = videoFile
+                VideoFile = videoFile,
             };
+
+            var validator = new AddVideoCommandValidator();
+            var validationResult = await validator.ValidateAsync(command);
+
+            if (!validationResult.IsValid)
+            {
+                return new VideoResponse(400, "Invalid input data", false, null);
+            }
 
             var response = await _mediator.Send(command);
 
-            return new Response(response.StatusCode, response.Message, response.IsSuccess);
+            return response;
         }
 
         [HttpDelete("{videoId}")]
-        [Authorize(Roles = "2")]
-        public async Task<Response> DeleteVideo(int videoId)
+        [Authorize(Roles = "1,2")]
+        public async Task<Response> DeleteVideo(
+            [Range(1, int.MaxValue, ErrorMessage = "Invalid course ID.")] int videoId)
         {
             var command = new DeleteVideoCommand
             {

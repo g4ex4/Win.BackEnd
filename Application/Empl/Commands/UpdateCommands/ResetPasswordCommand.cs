@@ -7,7 +7,8 @@ namespace Application.Empl.Commands.UpdateCommands
 {
     public class ResetPasswordCommand : IRequest<PersonResponse>
     {
-        [Required]
+        [Required(ErrorMessage = "Email is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
         public string Email { get; set; }
 
         public override string ToString()

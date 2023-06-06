@@ -5,17 +5,20 @@ using System.Text.Json;
 
 namespace Application.Empl.Commands.UpdateCommands
 {
-    public class UpdateEmoloyeeCommand : IRequest<Response>
+    public class UpdateEmployeeCommand : IRequest<Response>
     {
-        [Required]
+        [Required(ErrorMessage = "Id is required.")]
         public int Id { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Job title is required.")]
         public string JobTitle { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Experience is required.")]
         public string Experience { get; set; }
-        [Required]
+
+        [Required(ErrorMessage = "Education is required.")]
         public string Education { get; set; }
-        
+
         public override string ToString()
         {
             return JsonSerializer.Serialize(this);

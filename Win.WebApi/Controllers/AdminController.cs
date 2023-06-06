@@ -31,6 +31,11 @@ namespace Win.WebApi.Controllers
         [HttpPost("confirmMentor")]
         public async Task<ActionResult<PersonResponse>> ConfirmMentor(ConfirmMentorCommand command)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = "Invalid input data" });
+            }
+
             var response = await _mediator.Send(command);
 
             if (!response.IsSuccess)
@@ -44,14 +49,19 @@ namespace Win.WebApi.Controllers
         [HttpPost("promoteMentorToAdmin")]
         public async Task<ActionResult<PersonResponse>> PromoteMentorToAdmin(PromoteMentorToAdminCommand command)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = "Invalid input data" });
+            }
+
             var response = await _mediator.Send(command);
 
             if (!response.IsSuccess)
             {
                 return NotFound(new { Message = response.Message });
             }
-            _logger.LogInformation($"Mentor with ID {command.MentorId} " +
-                    $" promoted to administrator");
+
+            _logger.LogInformation($"Mentor with ID {command.MentorId} promoted to administrator");
 
             return Ok(response);
         }
@@ -67,7 +77,8 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpGet("getMentorById")]
-        public async Task<ActionResult<MentorLookupDto>> GetMentorById(int id)
+        public async Task<ActionResult<MentorLookupDto>> GetMentorById(
+            [Range(1, int.MaxValue, ErrorMessage = "Invalid MentorId")] int id)
         {
             var query = new GetMentorByIdQuery { MentorId = id };
             var mentor = await _mediator.Send(query);
@@ -81,7 +92,8 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpGet("getStudentById")]
-        public async Task<ActionResult<StudentLookupDto>> GetStudentById(int id)
+        public async Task<ActionResult<StudentLookupDto>> GetStudentById(
+            [Range(1, int.MaxValue, ErrorMessage = "Invalid StudentId")] int id)
         {
             var query = new GetStudentByIdQuery { StudentId = id };
             var student = await _mediator.Send(query);
@@ -107,6 +119,11 @@ namespace Win.WebApi.Controllers
         [HttpDelete("Delete-Mentor")]
         public async Task<Response> DeleteEmployee(DeleteEmplCommand request)
         {
+            if (!ModelState.IsValid)
+            {
+                return new Response(400, "Invalid input data", false);
+            }
+
             var response = await _mediator.Send(request);
 
             _logger.LogInformation($"Mentor with ID {request.EmployeeId} removed");
@@ -117,6 +134,11 @@ namespace Win.WebApi.Controllers
         [HttpDelete("Delete-Student")]
         public async Task<Response> DeleteStudent(DeleteStudentCommand request)
         {
+            if (!ModelState.IsValid)
+            {
+                return new Response(400, "Invalid input data", false);
+            }
+
             var response = await _mediator.Send(request);
 
             _logger.LogInformation($"Student with ID {request.StudentId} removed");
@@ -124,9 +146,15 @@ namespace Win.WebApi.Controllers
             return response;
         }
 
+
         [HttpDelete("deleteCourse")]
         public async Task<ActionResult<Response>> DeleteCourse([FromBody] DeleteCourseCommand command)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = "Invalid input data" });
+            }
+
             var response = await _mediator.Send(command);
 
             if (!response.IsSuccess)

@@ -41,7 +41,8 @@ namespace Application.Empl.Commands.CreateCommands
             var isGoogleEmail = _emailService.IsAllowedEmail(command.Email);
             if (!isGoogleEmail)
             {
-                return new PersonResponse(400, "Only Google email addresses are allowed.", false, null);
+                return new PersonResponse(400, "your email must end with: " +
+                    "gmail.com, outlook.com, mail.com, mail.ru, yahoo.com, aol.com", false, null);
             }
 
             string hashedPassword = _passwordHasher.HashPassword(null, command.PasswordHash);

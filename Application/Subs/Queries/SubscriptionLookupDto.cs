@@ -11,6 +11,7 @@ namespace Application.Subs.Queries
 {
     public class SubscriptionLookupDto : IMapWith<Subscription>
     {
+        public int Id { get; set; }
         public DateTime DateSubscribed { get; set; }
         public int StudentId { get; set; }
         public int CourseId { get; set; }

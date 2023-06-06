@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Application.Courses.Queries.GetCourseList
 {
@@ -15,10 +16,17 @@ namespace Application.Courses.Queries.GetCourseList
         public string Title { get; set; }
         public string Description { get; set; }
         public int MentorId { get; set; }
+        public string ImageCourseName { get; set; }
+        public string ImageCourseUrl { get; set; }
+
+
 
         public void Mapping(Profile profile)
         {
             profile.CreateMap<Course, CourseLookupDto>();
+                //.ForMember(cfg => cfg.ImageInBase64, 
+                //opt => opt.MapFrom(n => Convert.ToBase64String(n.ImageCourseUrl)));
+                
         }
     }
 }
