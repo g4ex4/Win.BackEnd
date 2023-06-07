@@ -9,10 +9,12 @@ namespace Application.Empl.Commands.DeleteCommands
         IRequestHandler<DeleteStudentCommand, Response>
     {
         private readonly IStudentDbContext _dbContext;
+        private readonly ISubDbContext _subsDbContext;
 
-        public DeleteStudentCommandHandler(IStudentDbContext dbContext)
+        public DeleteStudentCommandHandler(IStudentDbContext dbContext, ISubDbContext subsDbContext)
         {
             _dbContext = dbContext;
+            _subsDbContext = subsDbContext;
         }
 
         public async Task<Response> Handle(DeleteStudentCommand request, CancellationToken cancellationToken)
@@ -21,6 +23,13 @@ namespace Application.Empl.Commands.DeleteCommands
             if (entity == null)
             {
                 return new Response(400, "Student not found", false);
+            }
+
+            var subs = await _subsDbContext.Subs.FirstOrDefaultAsync(v => v.StudentId == request.StudentId);
+            if (subs != null)
+            {
+                _subsDbContext.Subs.Remove(subs);
+                await _subsDbContext.SaveChangesAsync(cancellationToken);
             }
 
             _dbContext.Students.Remove(entity);

@@ -31,6 +31,7 @@ namespace Application.Videos.Commands.CreateCommands
                 }
                 
                 var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(command.VideoFile.FileName);
+                //var filePath = Path.Combine(videoFolderPath, uniqueFileName);
                 var filePath = Path.Combine("C:\\Users\\user\\Desktop\\FinalProject\\pro\\public\\VideoFiles", uniqueFileName);
                 
                 using (var stream = new FileStream(filePath, FileMode.Create))
@@ -42,6 +43,7 @@ namespace Application.Videos.Commands.CreateCommands
                 var video = new Video
                 {
                     VideoName = command.VideoFile.FileName,
+                    //Url = videoFolderPath + "\\" + command.VideoFile.FileName,
                     Url = Path.Combine("\\VideoFiles", uniqueFileName),
                     DateTimeAdded = DateTime.UtcNow,
                     DateTimeUpdated = DateTime.UtcNow,
