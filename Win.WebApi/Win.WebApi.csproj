@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ImageFiles\55a83a6d-e6a8-4dfb-89b6-d2383e4246d5.png" />
+    <Compile Remove="ImageFiles\**" />
+    <Content Remove="ImageFiles\**" />
+    <EmbeddedResource Remove="ImageFiles\**" />
+    <None Remove="ImageFiles\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -35,7 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ImageFiles\" />
     <Folder Include="wwwroot\ImageFiles\" />
   </ItemGroup>
 
