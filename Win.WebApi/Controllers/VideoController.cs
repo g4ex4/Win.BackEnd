@@ -20,7 +20,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "2")]
+        [Authorize(Roles = "2")]
         public async Task<VideoResponse> AddVideo(int courseId, IFormFile videoFile)
         {
             var command = new AddVideoCommand
