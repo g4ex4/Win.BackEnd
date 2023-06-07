@@ -42,7 +42,7 @@ namespace Application.Courses.Commands.CreateCommands
             }
 
             var uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(command.ImageFile.FileName);
-            var filePath = Path.Combine(imageFolderPath, uniqueFileName);
+            var filePath = Path.Combine("C:\\Users\\user\\Desktop\\FinalProject\\pro\\public\\ImageFiles", uniqueFileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
@@ -58,7 +58,7 @@ namespace Application.Courses.Commands.CreateCommands
                 DateTimeAdded = DateTime.UtcNow,
                 DateTimeUpdated = DateTime.UtcNow,
                 ImageCourseName = uniqueFileName,
-                ImageCourseUrl = Path.Combine(imageFolderPath, uniqueFileName)
+                ImageCourseUrl = Path.Combine("\\ImageFiles", uniqueFileName)
             };
 
             await _courseDbContext.Courses.AddAsync(course);
