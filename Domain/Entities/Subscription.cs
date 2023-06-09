@@ -5,12 +5,9 @@ namespace Domain.Entities
 {
     public class Subscription : BaseEntity<int>
     {
+        public Guid UserId { get; set; }
+        public User User { get; set; }
+        public List<CourseSubscription> CourseSubscriptions { get; set; }
         public DateTime DateSubscribed { get; set; }
-
-        public int StudentId { get; set; }
-        public Student Student { get; set; }
-        public int CourseId { get; set; }
-        public Course Course { get; set; }
-
     }
 }

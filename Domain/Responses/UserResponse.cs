@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 
 namespace Domain.Responses
 {
-    public class EmployeeResponse : JwtResponse
+    public class UserResponse : JwtResponse
     {
-        public EmployeeResponse(int statusCode, string message, bool isSuccess, string jwtToken, Employee employee)
+        public UserResponse(int statusCode, string message, bool isSuccess, string jwtToken, User user)
         : base(statusCode, message, isSuccess, jwtToken)
         {
-            Id = employee?.Id ?? 0;
-            RoleId = employee?.RoleId ?? 0;
-            UserName = employee?.UserName ?? "";
+            Id = user.Id;
+            UserName = user?.UserName ?? "";
         }
         public string UserName { get; set; }
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public int RoleId { get; set; }
 
 

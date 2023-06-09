@@ -9,29 +9,46 @@ using Persistance;
 using System.Reflection;
 using System.Text;
 using Application.JWT;
-using Domain.Entities;
-using Microsoft.AspNetCore.Identity;
-using Xtate.Service;
 using Win.WebApi.Middleware;
+using Application.Managers;
+using Application.Users;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Application.Repositories;
+using Domain.Entities;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
+using static Org.BouncyCastle.Math.EC.ECCurve;
+using Application.Common.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<IdentityDbContext>();
+builder.Services.AddSingleton<SMTPConfig>(provider => BindConfiguration(provider));
 builder.Services.AddPersistance(builder.Configuration);
-builder.Services.AddScoped<IPasswordHasher<Employee>, PasswordHasher<Employee>>();
-builder.Services.AddScoped<IPasswordHasher<Student>, PasswordHasher<Student>>();
-
+builder.Services.AddApplication();
+builder.Services.AddMemoryCache();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
+builder.Services.AddTransient<EmailService>();
+builder.Services.AddTransient<RegisterUserHandler>();
+builder.Services.AddTransient<CheckCodeHandler>();
+builder.Services.AddTransient<LoginUserHandler>();
+builder.Services.AddTransient<EmailHandler>();
+builder.Services.AddTransient<AuthManager>();
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
     cfg.AddProfile(new AssemblyMappingProfile(typeof(ICourseDbContext).Assembly));
-    cfg.AddProfile(new AssemblyMappingProfile(typeof(IEmployeeDbContext).Assembly));
-    cfg.AddProfile(new AssemblyMappingProfile(typeof(IStudentSubscriptionDbContext).Assembly));
-    cfg.AddProfile(new AssemblyMappingProfile(typeof(IStudentCourseDbContext).Assembly));
+    cfg.AddProfile(new AssemblyMappingProfile(typeof(IUserCourseDbContext).Assembly));
     cfg.AddProfile(new AssemblyMappingProfile(typeof(ISubDbContext).Assembly));
 });
-
-builder.Services.AddApplication();
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(options =>
+{
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireDigit = false;
+})
+    .AddEntityFrameworkStores<BaseDbContext>();
 builder.Services.AddControllers();
 
 
@@ -125,3 +142,14 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+SMTPConfig? BindConfiguration(IServiceProvider provider)
+{
+    var envName = builder.Environment.EnvironmentName;
+
+    var config = new ConfigurationBuilder()
+        .AddJsonFile($"appsettings.json")
+        .Build();
+
+    var configService = config.Get<SMTPConfig>();
+    return configService;
+}

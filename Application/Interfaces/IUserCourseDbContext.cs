@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    public interface IStudentCourseDbContext
+    public interface IUserCourseDbContext
     {
-        DbSet<StudentCourse> StudentCourses { get; set; }
+        DbSet<UserCourse> UserCourses { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

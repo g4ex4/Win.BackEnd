@@ -15,13 +15,13 @@ namespace Application.Subs.Commands.CreateCommands
         private readonly ICourseDbContext _courseRepository;
         private readonly ISubDbContext _subDbContext;
         private readonly IStudentSubscriptionDbContext _studentsubDbContext;
-        private readonly IStudentCourseDbContext _studentCourseDbContext;
+        private readonly IUserCourseDbContext _studentCourseDbContext;
         private readonly ICoursesSubscriptionsDbContext _CourseSubscripDbContext;
         private readonly ILogger<SubscribeToCourseCommandHandler> _logger;
 
         public SubscribeToCourseCommandHandler(IStudentDbContext studentRepository, ICourseDbContext courseRepository,
             ISubDbContext subscriptionRepository, IStudentSubscriptionDbContext studentSubscriptionDbContext,
-            IStudentCourseDbContext studentCourseDbContext, ICoursesSubscriptionsDbContext coursesSubscriptionsDbContext,
+            IUserCourseDbContext studentCourseDbContext, ICoursesSubscriptionsDbContext coursesSubscriptionsDbContext,
             ILogger<SubscribeToCourseCommandHandler> logger)
         {
             _studentRepository = studentRepository;
@@ -63,7 +63,7 @@ namespace Application.Subs.Commands.CreateCommands
                 _subDbContext.Subs.Add(subscription);
                 await _subDbContext.SaveChangesAsync(cancellationToken);
 
-                var student_subscription = new StudentSubscription
+                var student_subscription = new UserSubscription
                 {
                     StudentId = command.StudentId,
                     SubscriptionId = subscription.Id

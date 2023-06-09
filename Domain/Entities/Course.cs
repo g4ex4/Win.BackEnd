@@ -10,12 +10,10 @@ namespace Domain.Entities
         public string ImageCourseName { get; set; }
         public string ImageCourseUrl { get; set; }
         public int CategoryId { get; set; }
-        public virtual Category Category { get; set; }
-        public int MentorId { get; set; }
-        public Employee Mentor { get; set; }
         public List<Video> Videous { get; set; }
-        public List<StudentCourse> StudentCourse { get; set; }
-        public List<CategoryCourse> CategoryCourse { get; set; }
+        public List<CourseSubscription> CourseSubscriptions { get; set; }
+        public List<UserCourse> UserCourses { get; set; }
+        public List<CategoryCourse> CategoryCourses { get; set; }
         
         
     }

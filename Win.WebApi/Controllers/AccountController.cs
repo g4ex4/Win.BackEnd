@@ -24,7 +24,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<EmployeeResponse> Register(RegisterEmployeeCommand request)
+        public async Task<UserResponse> Register(RegisterEmployeeCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -49,7 +49,7 @@ namespace Win.WebApi.Controllers
         }
 
         [HttpPost("authorize")]
-        public async Task<EmployeeResponse> Authorize(AuthorizeEmployeeCommand request)
+        public async Task<UserResponse> Authorize(AuthorizeEmployeeCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -58,7 +58,7 @@ namespace Win.WebApi.Controllers
 
             var response = await _mediator.Send(request);
 
-            return (EmployeeResponse)response;
+            return (UserResponse)response;
         }
 
         [HttpGet("confirm-email")]

@@ -20,7 +20,7 @@ namespace Application.Courses.Queries.GetCourseList
 
         public async Task<CourseListVm> Handle(GetCourseMentorQuery request, CancellationToken cancellationToken)
         {
-            var coursesQuery = await _dbContext.Courses.Where(course => course.MentorId == request.MentorId)
+            var coursesQuery = await _dbContext.Courses.Where(course => course.UserId == request.MentorId)
                 .ProjectTo<CourseLookupDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 

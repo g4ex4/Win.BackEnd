@@ -9,7 +9,6 @@ namespace Domain.Responses
             : base(course, statusCode, message, isSuccess)
         {
             Id = course?.Id ?? 0;
-            MentorId = course?.MentorId ?? 0;
             CategoryId = course?.CategoryId ?? 0;
             ImageCourseName = course?.ImageCourseName ?? "";
             ImageCourseUrl = course?.ImageCourseUrl ?? "";
@@ -23,6 +22,6 @@ namespace Domain.Responses
         public string ImageCourseUrl { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public int MentorId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

@@ -33,7 +33,7 @@ namespace Application.Courses.Commands.DeleteCommands
                 return new Response(403, "Course is not found.", false);
             }
 
-            var mentor = await _employeeDbContext.Employees.FirstOrDefaultAsync(e => e.Id == entity.MentorId);
+            var mentor = await _employeeDbContext.Employees.FirstOrDefaultAsync(e => e.Id == entity.UserId);
 
             if (mentor == null)
             {

@@ -5,12 +5,14 @@ using Domain.Links;
 using Microsoft.AspNetCore.Identity;
 using static System.Reflection.Metadata.BlobBuilder;
 using System.Reflection.Emit;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Persistance
 {
-    public class BaseDbContext : DbContext, ICategoryDbContext, ICourseDbContext,
-        IEmployeeDbContext, IStudentDbContext, ISubDbContext, IVideoDbContext, 
-        IStudentSubscriptionDbContext, IStudentCourseDbContext, ICoursesSubscriptionsDbContext
+    public class BaseDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>,
+         ICategoryDbContext, ICourseDbContext,
+         ISubDbContext, IVideoDbContext, 
+         IUserCourseDbContext, ICoursesSubscriptionsDbContext
     {
         public BaseDbContext()
         {
@@ -25,34 +27,55 @@ namespace Persistance
         public DbSet<Course> Courses { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<Subscription> Subs { get; set; }
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Employee> Employees { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<CategoryCourse> CategoryCourses { get; set; }
         public DbSet<CourseSubscription> CoursesSubscriptions { get; set;}
-        public DbSet<StudentCourse> StudentCourses { get; set; }
-        public DbSet<StudentSubscription> StudentSubscriptions { get; set; }
+        public DbSet<UserCourse> UserCourses { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.Entity<CategoryCourse>()
                 .HasKey(cc => new { cc.CategoryId, cc.CourseId });
+            builder.Entity<CategoryCourse>()
+                .HasOne(a => a.Course)
+                .WithMany(ba => ba.CategoryCourses)
+                .HasForeignKey(a => a.CourseId);
+            builder.Entity<CategoryCourse>()
+                            .HasOne(a => a.Category)
+                            .WithMany(ba => ba.CategoryCourses)
+                            .HasForeignKey(a => a.CategoryId)
+                            .OnDelete(DeleteBehavior.Restrict);
+
 
             builder.Entity<CourseSubscription>()
                 .HasKey(cs => new { cs.CourseId, cs.SubscriptionId });
+            builder.Entity<CourseSubscription>()
+                .HasOne(a => a.Course)
+                .WithMany(ba => ba.CourseSubscriptions)
+                .HasForeignKey(a => a.CourseId);
+            builder.Entity<CourseSubscription>()
+                            .HasOne(a => a.Subscription)
+                            .WithMany(ba => ba.CourseSubscriptions)
+                            .HasForeignKey(a => a.SubscriptionId)
+                            .OnDelete(DeleteBehavior.Restrict);
 
-            builder.Entity<StudentCourse>()
-                .HasKey(sc => new { sc.StudentId, sc.CourseId });
 
-            builder.Entity<StudentSubscription>()
-                .HasKey(ss => new { ss.StudentId, ss.SubscriptionId });
+            builder.Entity<UserCourse>()
+                .HasKey(sc => new { sc.UserId, sc.CourseId });
 
-            builder.Entity<Course>()
-                .HasOne(c => c.Mentor)
-                .WithMany(m => m.Courses)
-                .HasForeignKey(c => c.MentorId)
+
+            builder.Entity<UserCourse>()
+                .HasOne(u => u.User)
+                .WithMany(c => c.UserCourse)
+                .HasForeignKey(u => u.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
-            
+
+            builder.Entity<UserCourse>()
+                .HasOne(u => u.Course)
+                .WithMany(c => c.UserCourses)
+                .HasForeignKey(u => u.CourseId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             builder.Entity<Video>()
                 .HasOne(v => v.Course)
                 .WithMany(c => c.Videous)
@@ -62,30 +85,7 @@ namespace Persistance
             
         }
 
-        public (Employee?,bool) SeedUsers()
-        {
-            if (Employees.Any())
-                return (null, false);
-
-            Employee admin = new Employee()
-            {
-                UserName = "Admin",
-                Email = "1goldyshsergei1@gmail.com",
-                EmailConfirmed = true,
-                IsConfirmed= true,
-                RoleId = 1,
-                Education = "IT Academy",
-                Experience = "10 Year",
-                JobTitle = "Administrator",
-            };
-
-
-            PasswordHasher<Employee> passwordHasher = new PasswordHasher<Employee>();
-            admin.PasswordHash = passwordHasher.HashPassword(admin, "111");
-
-            return (admin,true);
-        }
-
+        
         public (List<Role>?, bool) SeedRole()
         {
             if (Roles.Any())

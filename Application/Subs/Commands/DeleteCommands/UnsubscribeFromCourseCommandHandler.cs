@@ -11,13 +11,13 @@ namespace Application.Subs.Commands.DeleteCommands
     {
         private readonly ISubDbContext _subDbContext;
         private readonly IStudentSubscriptionDbContext _studentsubDbContext;
-        private readonly IStudentCourseDbContext _studentCourseDbContext;
+        private readonly IUserCourseDbContext _studentCourseDbContext;
         private readonly ICoursesSubscriptionsDbContext _CourseSubscripDbContext;
         private readonly ILogger<UnsubscribeFromCourseCommandHandler> _logger;
 
         public UnsubscribeFromCourseCommandHandler(ISubDbContext subscriptionRepository,
             IStudentSubscriptionDbContext studentSubscriptionDbContext,
-            IStudentCourseDbContext studentCourseDbContext,
+            IUserCourseDbContext studentCourseDbContext,
             ICoursesSubscriptionsDbContext coursesSubscriptionsDbContext,
             ILogger<UnsubscribeFromCourseCommandHandler> logger)
         {

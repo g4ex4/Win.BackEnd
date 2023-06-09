@@ -18,7 +18,7 @@ namespace Application.Courses.Commands.UpdateCommands
         public async Task<CourseResponse> Handle(UpdateCourseCommand command, CancellationToken cancellationToken)
         {
             var entity = await _dbContext.Courses.FirstOrDefaultAsync(c => c.Id == command.CourseId, cancellationToken);
-            if (entity == null || entity.MentorId != command.MentorId)
+            if (entity == null || entity.UserId != command.MentorId)
             {
                 return new CourseResponse(null, 400, "Course or Mentor is not found", true);
             }

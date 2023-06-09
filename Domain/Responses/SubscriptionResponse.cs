@@ -15,13 +15,12 @@ namespace Domain.Responses
             if (subscription != null)
             {
                 Id = subscription.Id;
-                StudentId = subscription.StudentId;
-                CourseId = subscription.CourseId;
+                UserId = subscription.UserId;
             }
         }
 
         public int Id { get; set; }
-        public int StudentId { get; set; }
+        public Guid UserId { get; set; }
         public int CourseId { get; set; }
     }
 }

@@ -29,7 +29,7 @@ namespace Application.Courses.Queries.GetCourseDetails
             var entity = await _dbContext.Courses
                 .FirstOrDefaultAsync(course => course.Id == command.Id, cancellationToken);
 
-            if (entity == null || entity.MentorId != command.MentorId)
+            if (entity == null || entity.UserId != command.MentorId)
             {
                 throw new NotFoundException(nameof(Courses), command.MentorId);
             }
