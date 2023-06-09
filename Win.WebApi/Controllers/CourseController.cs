@@ -90,10 +90,9 @@ namespace Win.WebApi.Controllers
         [HttpGet("{id}/getCourseDetails")]
         [Authorize(Roles = "1,2")]
         public async Task<ActionResult<CourseDetailsVm>> GetCourseDetails(
-            [Range(1, int.MaxValue, ErrorMessage = "Invalid course ID.")]int id, 
-            [Range(1, int.MaxValue, ErrorMessage = "Invalid MentorId.")] int mentorId)
+            [Range(1, int.MaxValue, ErrorMessage = "Invalid course ID.")]int id)
         {
-            var query = new GetCourseDetailsQuery { Id = id, MentorId = mentorId };
+            var query = new GetCourseDetailsQuery { Id = id};
             var result = await _mediator.Send(query);
 
             return Ok(result);

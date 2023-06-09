@@ -109,7 +109,7 @@ namespace Persistance
                        => opt.GetService<BaseDbContext>());
 
 
-                    using (var db = new SqlServerContext())
+                    using (var db = new PgContext())
                     {
                         var (сategory, isCreateСategory) = db.SeedCategory();
                         if (isCreateСategory == true)
